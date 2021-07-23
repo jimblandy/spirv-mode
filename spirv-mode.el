@@ -9,12 +9,20 @@
 
 ;; This file is not part of GNU Emacs.
 
+(require 'spirv-mode-tables)
+
 (define-derived-mode spirv-mode
   prog-mode "SPIR-V assembly"
-  "Major mode for editing SPIR-V assembly language."
+  "Major mode for editing SPIR-V assembly language.
+\\<spirv-mode-map>
+\\[indent-for-tab-command] aligns instructions and comments.
+
+\\[complete-symbol] completes instruction names."
+
   (setq-local case-fold-search nil
               font-lock-defaults '(spirv-mode-keywords nil nil nil)
-              indent-line-function 'spirv-mode-indent-for-tab))
+              indent-line-function 'spirv-mode-indent-for-tab)
+  (add-to-list 'completion-at-point-functions 'spirv-mode--complete-opcode-at-point))
 
 (defvar spirv-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -45,28 +53,48 @@ Initially, this is nil in each buffer.
 A value is chosen the first time a line is indented, based on the
 existing buffer text.")
 
+(defmacro spirv-mode--cond-line-regexp (&rest arms)
+  "Like `cond`, but the conditions are regexps matched against the entire line."
+  (let ((saved-point-sym (gensym "cond-line-regexp")))
+    `(let ((,saved-point-sym (point-marker)))
+       (unwind-protect
+           (progn
+             (forward-line 0)
+             (cond
+              ,@(mapcar (lambda (arm)
+                          (unless (and (consp arm) (proper-list-p arm))
+                            (error "cond-line-regexp: clause is not well-formed: %S" arm))
+                          (cond
+                           ((stringp (car arm))
+                            `((looking-at ,(car arm))
+                              (goto-char ,saved-point-sym)
+                              (setq ,saved-point-sym nil)
+                              ,@(cdr arm)))
+                           ((eq (car arm) 't)
+                            `(t
+                              (goto-char ,saved-point-sym)
+                              (setq ,saved-point-sym nil)
+                              ,@(cdr arm)))
+                           (t
+                            (error "cond-line-regexp: clause does not start with a regexp or `t': %S" arm))))
+                        arms)))
+         (when ,saved-point-sym
+           (goto-char ,saved-point-sym))))))
+
 (defun spirv-mode-indent-for-tab ()
   "Indent the current line as appropriate for SPIR-V mode."
-  (let ((move-to
-         (save-excursion
-           (forward-line 0)
-           (cond
-            ((looking-at "\\s-*\n") (spirv-mode--indent-blank-line))
-            ((looking-at "\\s-*;") (spirv-mode--indent-comment))
-            ((looking-at "[^;\n]*\\(%\\|\\_<Op\\)") (spirv-mode--indent-insn))))))
-    (when move-to
-      (goto-char move-to))))
+  (spirv-mode--cond-line-regexp
+   ("\\s-*\n" (spirv-mode--indent-blank-line))
+   ("\\s-*;" (spirv-mode--indent-comment))
+   ("[^;\n]*\\(%\\|\\_<Op\\)" (spirv-mode--indent-insn))))
 
 (defun spirv-mode--indent-comment ()
   "Align the current line with the previous comment.
 If there is no previous comment, align it with the current opcode column.
-Assume point is at the beginning of a line containing only a comment."
+Try to preserve point helpfully."
   (let ((col (or (spirv-mode--prior-comment-column)
                  (spirv-mode--opcode-column))))
-    (delete-region (point)
-                   (progn (skip-syntax-forward "-") (point)))
-    (indent-to col)
-    nil))
+    (spirv-mode--adjust-indentation col)))
 
 (defun spirv-mode--prior-comment-column ()
   "Return the column number of the closest whole-line comment above point.
@@ -79,43 +107,38 @@ Return nil if there is none."
 
 (defun spirv-mode--indent-blank-line ()
   "Set up indentation for a blank line.
-Assume point is at the beginning of the line."
-  (delete-region (point)
-                 (progn (skip-syntax-forward "-") (point)))
-  (indent-to (spirv-mode--opcode-column))
-  (point))
+Try to preserve pont helpfully."
+  (spirv-mode--adjust-identation (spirv-mode--opcode-column)))
 
 (defun spirv-mode--indent-insn ()
   "Indent a line containing an instruction.
 Assume `opcode' gives the buffer position of the start of the opcode.
 Adjust leading indentation so that the opcode starts in the opcode column.
-Assume point is at the beginning of the line."
-  (let ((goal (spirv-mode--opcode-column)))
-    ;; How much of an instruction do we actually have?
-    (cond
-     ;; A result id and an equals sign?
-     ((looking-at "\\s-*\\(%[^[:space:]\n]+\\)\\s-*=\\s-*")
-      (let ((result-id (match-string 1)))
-        ;; Clean up any spaces around the equal sign.
-        (delete-region (match-beginning 0) (match-end 0))
-        (indent-to (- goal 3 (length result-id)))
-        (delete-region (point) (progn (skip-syntax-forward "-") (point)))
-        (insert result-id " = ")))
+Try to preserve point helpfully."
+  (save-excursion
+    (let ((goal (spirv-mode--opcode-column)))
+      ;; How much of an instruction do we actually have?
+      (spirv-mode--cond-line-regexp
+       ;; A result id and an equals sign?
+       ("\\s-*\\(%[^[:space:]\n]+\\)\\(\\s-*\\)=\\(\\s-*\\)"
+        (let ((result-id (match-string 1)))
+          ;; Clean up spaces around the id and equal sign.
+          (goto-char (match-beginning 3))
+          (spirv-mode--adjust-space 1)
+          (goto-char (match-beginning 2))
+          (spirv-mode--adjust-space 1)
+          (goto-char (match-beginning 1))
+          (spirv-mode--adjust-space (- goal 3 (length result-id)))))
 
-     ;; Just a result id?
-     ((looking-at "\\s-*\\(%[^[:space:]\n]+\\)\\s-*")
-      (let ((result-id (match-string 1)))
-        (indent-to (- goal 3 (length result-id)))
-        (delete-region (point) (progn (skip-syntax-forward "-") (point)))
-        (forward-char (length result-id))
-        (when (looking-at " ")
-          (forward-char 1))))
+       ;; Just a result id?
+       ("\\s-*\\(%[^[:space:]\n]+\\)\\s-*"
+        (let ((result-id (match-string 1)))
+          (goto-char (match-beginning 1))
+          (spirv-mode--adjust-space (- goal 3 (length result-id)))))
 
-     ;; Just an opcode. Easy peasy.
-     (t
-      (indent-to goal)
-      (delete-region (point) (progn (skip-syntax-forward "-") (point))))))
-  (point))
+       ;; Just an opcode. Easy peasy.
+       (t
+        (spirv-mode--adjust-indentation goal))))))
 
 (defun spirv-mode--opcode-column ()
   "Return the current opcode column."
@@ -151,3 +174,60 @@ column 24, because that's a nice number."
     (read-number "Set opcode column (default %d): "
                  (current-column))))
   (setq spirv-mode-opcode-column column))
+
+(defun spirv-mode--adjust-indentation (desired)
+  "Change the identation of the current line to `desired'.
+This tries to do so in a way such that point lands at a nice place.
+Tabs are not supported; patches welcome."
+  (save-excursion
+    (forward-line 0)
+    (spirv-mode--adjust-space desired)))
+
+(defun spirv-mode--adjust-space (desired)
+  "Change the run of spaces at point to have length `desired'.
+This tries to do so in a way such that point lands at a nice place.
+Tabs are not supported; patches welcome."
+  (save-excursion
+    (skip-chars-backward " ")
+    (let ((left (point)))
+      (skip-chars-forward " ")
+      (let* ((current (- (point) left))
+             (change (- desired current)))
+        (if (> change 0)
+            (insert-before-markers (make-string change ?\ ))
+          (delete-region (+ (point) change) (point)))))))
+
+(defun spirv-mode--complete-opcode-at-point ()
+  "Complete a SPIR-V opcode name preceding point, if appropriate."
+  (save-match-data
+    (when (looking-back "\\_<Op[[:alnum:]]*")
+      (list (match-beginning 0) (match-end 0)
+            spirv-mode--instruction-names))))
+
+
+;;;; Functions for generating completion tables from the official Khronos grammar.
+
+;;; The file spirv.core.grammar.json, from the repository
+;;; https://github.com/KhronosGroup/SPIRV-Headers.git, describes the grammar of
+;;; SPIR-V instructions. From this we generate our opcode completion table.
+
+(defun spirv-mode--parse-grammar (buffer)
+  "Parse the contents of `buffer' as a SPIR-V grammar description."
+  (with-current-buffer buffer
+    (save-excursion
+      (goto-char (point-min))
+      (json-parse-buffer :array-type 'list
+                         :null-object nil
+                         :false-object nil))))
+
+(defun spirv-mode--opcode-list (grammar)
+  "Return a list of opcode names given in `grammar'."
+  (seq-map (lambda (instruction) (gethash "opname" instruction))
+           (gethash "instructions" grammar)))
+
+;; todo:
+;; color known opcodes differently from mistyped opcodes
+;; xref-find-definitions for ids
+;; instruction operand prompts
+
+(provide 'spirv-mode)
