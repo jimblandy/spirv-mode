@@ -108,7 +108,7 @@ Return nil if there is none."
 (defun spirv-mode--indent-blank-line ()
   "Set up indentation for a blank line.
 Try to preserve pont helpfully."
-  (spirv-mode--adjust-identation (spirv-mode--opcode-column)))
+  (spirv-mode--adjust-indentation (spirv-mode--opcode-column)))
 
 (defun spirv-mode--indent-insn ()
   "Indent a line containing an instruction.
