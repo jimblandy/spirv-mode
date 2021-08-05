@@ -9,6 +9,7 @@
 
 ;; This file is not part of GNU Emacs.
 
+(require 'dash)
 (require 'spirv-mode-tables)
 
 (define-derived-mode spirv-mode
@@ -22,7 +23,9 @@
   (setq-local case-fold-search nil
               font-lock-defaults '(spirv-mode-keywords nil nil nil)
               indent-line-function 'spirv-mode-indent-for-tab)
-  (add-to-list 'completion-at-point-functions 'spirv-mode--complete-opcode-at-point))
+  (add-to-list 'completion-at-point-functions 'spirv-mode--complete-opcode-at-point)
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'spirv-mode-eldoc-function))
 
 (defvar spirv-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -204,30 +207,51 @@ Tabs are not supported; patches welcome."
       (list (match-beginning 0) (match-end 0)
             spirv-mode--instruction-names))))
 
-
-;;;; Functions for generating completion tables from the official Khronos grammar.
+(defun spirv-mode--highlight-op (op)
+  "Put highlighting on an operand help string `op'."
+  ;; put-text-property is a mutating operation, so if we don't want the copy of
+  ;; `op' in the table to get a highlight face set on it, we need to make a
+  ;; copy.
+  (setq op (copy-sequence op))
+  (put-text-property 0 (length op) 'face 'eldoc-highlight-function-argument op)
+  op)
 
-;;; The file spirv.core.grammar.json, from the repository
-;;; https://github.com/KhronosGroup/SPIRV-Headers.git, describes the grammar of
-;;; SPIR-V instructions. From this we generate our opcode completion table.
+(defun spirv-mode--insn-help (opname operands arg)
+  "Compute a help string for insn to display with eldoc.
+`arg' is the index of the argument to highlight. Zero is probably fine."
+  (concat opname " "
+          (mapconcat #'identity
+                     (-map-indexed (lambda (ix op)
+                                     (if (= ix arg)
+                                         (spirv-mode--highlight-op op)
+                                       op))
+                                   operands)
+                     " ")))
 
-(defun spirv-mode--parse-grammar (buffer)
-  "Parse the contents of `buffer' as a SPIR-V grammar description."
-  (with-current-buffer buffer
-    (save-excursion
-      (goto-char (point-min))
-      (json-parse-buffer :array-type 'list
-                         :null-object nil
-                         :false-object nil))))
+(defun spirv-mode-eldoc-function ()
+  (save-excursion
+    (let ((here (point))
+          (start (progn (forward-line 0) (point)))
+          (limit (progn (forward-line 1) (point))))
+      (goto-char start)
+      (when (re-search-forward "\\_<Op[[:alnum:]]*?\\_>" limit t)
+        (let* ((opname (match-string-no-properties 0))
+               (operands (gethash opname spirv-mode--instruction-operands)))
+          (when operands
+            ;; Figure out which argument point is in.
+            (when (<= (point) here)
+              (setq arg 0)
+              (while (progn (forward-sexp)
+                            (< (point) here))
+                (setq arg (1+ arg))))
+            (spirv-mode--insn-help opname operands arg)))))))
 
-(defun spirv-mode--opcode-list (grammar)
-  "Return a list of opcode names given in `grammar'."
-  (seq-map (lambda (instruction) (gethash "opname" instruction))
-           (gethash "instructions" grammar)))
 
 ;; todo:
 ;; color known opcodes differently from mistyped opcodes
 ;; xref-find-definitions for ids
-;; instruction operand prompts
+;;
+;; Provide an eldoc-documentation-function to show instruction operands in
+;; minibuffer
 
 (provide 'spirv-mode)
