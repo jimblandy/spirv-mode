@@ -263,10 +263,6 @@ Tabs are not supported; patches welcome."
 
 
 ;; todo:
-;; color known opcodes differently from mistyped opcodes
 ;; xref-find-definitions for ids
-;;
-;; Provide an eldoc-documentation-function to show instruction operands in
-;; minibuffer
 
 (provide 'spirv-mode)
