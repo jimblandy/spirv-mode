@@ -49,6 +49,8 @@
     ;; IdResult operands are the "%id = " before the opcode, so just omit
     ;; them from our display here.
     (if (equal kind "IdResult") nil
+      (when (equal quantifier "?")
+        (setq name (concat name "?")))
       (let (arguments
             found
             (start 0))

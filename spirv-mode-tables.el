@@ -10,7 +10,7 @@
                   ("Continued Source"))
                  "OpSource"
                  (nil
-                  ("SourceLanguage" "Version" "File" "Source"))
+                  ("SourceLanguage" "Version" "'File'?" "'Source'?"))
                  "OpSourceExtension"
                  (nil
                   ("Extension"))
@@ -65,7 +65,7 @@
                   ("Column Type" "Column Count"))
                  "OpTypeImage"
                  (t
-                  ("Sampled Type" "Dim" "Depth" "Arrayed" "MS" "Sampled" "ImageFormat" "AccessQualifier"))
+                  ("Sampled Type" "Dim" "Depth" "Arrayed" "MS" "Sampled" "ImageFormat" "AccessQualifier?"))
                  "OpTypeSampler"
                  (t nil)
                  "OpTypeSampledImage"
@@ -149,22 +149,22 @@
                   ("IdResultType" "Function" "Argument 0" "Argument 1" "..."))
                  "OpVariable"
                  (t
-                  ("IdResultType" "StorageClass" "Initializer"))
+                  ("IdResultType" "StorageClass" "'Initializer'?"))
                  "OpImageTexelPointer"
                  (t
                   ("IdResultType" "Image" "Coordinate" "Sample"))
                  "OpLoad"
                  (t
-                  ("IdResultType" "Pointer" "MemoryAccess"))
+                  ("IdResultType" "Pointer" "MemoryAccess?"))
                  "OpStore"
                  (nil
-                  ("Pointer" "Object" "MemoryAccess"))
+                  ("Pointer" "Object" "MemoryAccess?"))
                  "OpCopyMemory"
                  (nil
-                  ("Target" "Source" "MemoryAccess" "MemoryAccess"))
+                  ("Target" "Source" "MemoryAccess?" "MemoryAccess?"))
                  "OpCopyMemorySized"
                  (nil
-                  ("Target" "Source" "Size" "MemoryAccess" "MemoryAccess"))
+                  ("Target" "Source" "Size" "MemoryAccess?" "MemoryAccess?"))
                  "OpAccessChain"
                  (t
                   ("IdResultType" "Base" "Indexes" "..."))
@@ -226,43 +226,43 @@
                   ("IdResultType" "Image" "Sampler"))
                  "OpImageSampleImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands?"))
                  "OpImageSampleExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSampleDrefImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands?"))
                  "OpImageSampleDrefExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSampleProjImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands?"))
                  "OpImageSampleProjExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSampleProjDrefImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands?"))
                  "OpImageSampleProjDrefExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageFetch"
                  (t
-                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands?"))
                  "OpImageGather"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands?"))
                  "OpImageDrefGather"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands?"))
                  "OpImageRead"
                  (t
-                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands?"))
                  "OpImageWrite"
                  (nil
-                  ("Image" "Coordinate" "Texel" "ImageOperands"))
+                  ("Image" "Coordinate" "Texel" "ImageOperands?"))
                  "OpImage"
                  (t
                   ("IdResultType" "Sampled Image"))
@@ -820,37 +820,37 @@
                   ("IdResultType" "GlobalWorkSize" "LocalWorkSize" "GlobalWorkOffset"))
                  "OpImageSparseSampleImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands?"))
                  "OpImageSparseSampleExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSparseSampleDrefImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands?"))
                  "OpImageSparseSampleDrefExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSparseSampleProjImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands?"))
                  "OpImageSparseSampleProjExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSparseSampleProjDrefImplicitLod"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands?"))
                  "OpImageSparseSampleProjDrefExplicitLod"
                  (t
                   ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSparseFetch"
                  (t
-                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands?"))
                  "OpImageSparseGather"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands?"))
                  "OpImageSparseDrefGather"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands?"))
                  "OpImageSparseTexelsResident"
                  (t
                   ("IdResultType" "Resident Code"))
@@ -864,7 +864,7 @@
                   ("Pointer" "Memory" "Semantics"))
                  "OpImageSparseRead"
                  (t
-                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands?"))
                  "OpSizeOf"
                  (t
                   ("IdResultType" "Pointer"))
@@ -949,52 +949,52 @@
                   ("IdResultType" "Execution" "Value" "Delta"))
                  "OpGroupNonUniformIAdd"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformFAdd"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformIMul"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformFMul"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformSMin"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformUMin"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformFMin"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformSMax"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformUMax"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformFMax"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformBitwiseAnd"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformBitwiseOr"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformBitwiseXor"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformLogicalAnd"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformLogicalOr"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformLogicalXor"
                  (t
-                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
+                  ("IdResultType" "Execution" "Operation" "Value" "'ClusterSize'?"))
                  "OpGroupNonUniformQuadBroadcast"
                  (t
                   ("IdResultType" "Execution" "Value" "Index"))
@@ -1101,7 +1101,7 @@
                   ("IdResultType" "Execution"))
                  "OpImageSampleFootprintNV"
                  (t
-                  ("IdResultType" "Sampled Image" "Coordinate" "Granularity" "Coarse" "ImageOperands"))
+                  ("IdResultType" "Sampled Image" "Coordinate" "Granularity" "Coarse" "ImageOperands?"))
                  "OpGroupNonUniformPartitionNV"
                  (t
                   ("IdResultType" "Value"))
@@ -1133,10 +1133,10 @@
                   ("Component Type" "Execution" "Rows" "Columns"))
                  "OpCooperativeMatrixLoadNV"
                  (t
-                  ("IdResultType" "Pointer" "Stride" "Column Major" "MemoryAccess"))
+                  ("IdResultType" "Pointer" "Stride" "Column Major" "MemoryAccess?"))
                  "OpCooperativeMatrixStoreNV"
                  (nil
-                  ("Pointer" "Object" "Stride" "Column Major" "MemoryAccess"))
+                  ("Pointer" "Object" "Stride" "Column Major" "MemoryAccess?"))
                  "OpCooperativeMatrixMulAddNV"
                  (t
                   ("IdResultType" "A" "B" "C"))
