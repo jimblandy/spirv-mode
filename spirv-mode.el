@@ -21,7 +21,7 @@
 \\[complete-symbol] completes instruction names."
 
   (setq-local case-fold-search nil
-              font-lock-defaults '(spirv-mode-keywords nil nil nil)
+              font-lock-defaults `(,spirv-mode-keywords nil nil nil)
               indent-line-function 'spirv-mode-indent-for-tab)
   (add-to-list 'completion-at-point-functions 'spirv-mode--complete-opcode-at-point)
   (add-function :before-until (local 'eldoc-documentation-function)
@@ -48,7 +48,19 @@
   "Keymap for SPIR-V assembly major mode.")
 
 (defconst spirv-mode-keywords
-  '("\\_<Op[a-zA-Z0-9]*\\_>"))
+  `((spirv-mode--font-lock-instruction-name . font-lock-keyword-face)
+    ("\\_<Op[[:alnum:]]*\\_>" . font-lock-variable-name-face)))
+
+(defun spirv-mode--font-lock-instruction-name (limit)
+  "A font lock matcher function for true SPIR-V instruction names.
+This uses a regexp to find potential matches quickly, and
+then consults a hash table to see if it's actually an instruction."
+  (let (result)
+    (while (and (not result)
+                (re-search-forward "\\_<Op[[:alnum:]]*\\_>" limit t))
+      (setq result
+            (gethash (match-string-no-properties 0) spirv-mode--instructions)))
+    result))
 
 (defvar-local spirv-mode-opcode-column nil
   "The column in which SPIR-V instruction names should start.
@@ -205,7 +217,7 @@ Tabs are not supported; patches welcome."
   (save-match-data
     (when (looking-back "\\_<Op[[:alnum:]]*")
       (list (match-beginning 0) (match-end 0)
-            spirv-mode--instruction-names))))
+            spirv-mode--instructions))))
 
 (defun spirv-mode--highlight-op (op)
   "Put highlighting on an operand help string `op'."
@@ -216,17 +228,20 @@ Tabs are not supported; patches welcome."
   (put-text-property 0 (length op) 'face 'eldoc-highlight-function-argument op)
   op)
 
-(defun spirv-mode--insn-help (opname operands arg)
+(defun spirv-mode--insn-help (opname insn arg)
   "Compute a help string for insn to display with eldoc.
 `arg' is the index of the argument to highlight. Zero is probably fine."
-  (concat opname " "
-          (mapconcat #'identity
-                     (-map-indexed (lambda (ix op)
-                                     (if (= ix arg)
-                                         (spirv-mode--highlight-op op)
-                                       op))
-                                   operands)
-                     " ")))
+  (let ((has-result (car insn))
+        (operands (cadr insn)))
+    (concat (if has-result "%id = " "")
+            opname " "
+            (mapconcat #'identity
+                       (-map-indexed (lambda (ix op)
+                                       (if (= ix arg)
+                                           (spirv-mode--highlight-op op)
+                                         op))
+                                     operands)
+                       " "))))
 
 (defun spirv-mode-eldoc-function ()
   (save-excursion
@@ -236,15 +251,15 @@ Tabs are not supported; patches welcome."
       (goto-char start)
       (when (re-search-forward "\\_<Op[[:alnum:]]*?\\_>" limit t)
         (let* ((opname (match-string-no-properties 0))
-               (operands (gethash opname spirv-mode--instruction-operands)))
-          (when operands
+               (insn (gethash opname spirv-mode--instructions)))
+          (when insn
             ;; Figure out which argument point is in.
             (when (<= (point) here)
               (setq arg 0)
               (while (progn (forward-sexp)
                             (< (point) here))
                 (setq arg (1+ arg))))
-            (spirv-mode--insn-help opname operands arg)))))))
+            (spirv-mode--insn-help opname insn arg)))))))
 
 
 ;; todo:

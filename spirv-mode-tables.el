@@ -1,1615 +1,1654 @@
-(defconst spirv-mode--instruction-names
-  '("OpNop"
-    "OpUndef"
-    "OpSourceContinued"
-    "OpSource"
-    "OpSourceExtension"
-    "OpName"
-    "OpMemberName"
-    "OpString"
-    "OpLine"
-    "OpExtension"
-    "OpExtInstImport"
-    "OpExtInst"
-    "OpMemoryModel"
-    "OpEntryPoint"
-    "OpExecutionMode"
-    "OpCapability"
-    "OpTypeVoid"
-    "OpTypeBool"
-    "OpTypeInt"
-    "OpTypeFloat"
-    "OpTypeVector"
-    "OpTypeMatrix"
-    "OpTypeImage"
-    "OpTypeSampler"
-    "OpTypeSampledImage"
-    "OpTypeArray"
-    "OpTypeRuntimeArray"
-    "OpTypeStruct"
-    "OpTypeOpaque"
-    "OpTypePointer"
-    "OpTypeFunction"
-    "OpTypeEvent"
-    "OpTypeDeviceEvent"
-    "OpTypeReserveId"
-    "OpTypeQueue"
-    "OpTypePipe"
-    "OpTypeForwardPointer"
-    "OpConstantTrue"
-    "OpConstantFalse"
-    "OpConstant"
-    "OpConstantComposite"
-    "OpConstantSampler"
-    "OpConstantNull"
-    "OpSpecConstantTrue"
-    "OpSpecConstantFalse"
-    "OpSpecConstant"
-    "OpSpecConstantComposite"
-    "OpSpecConstantOp"
-    "OpFunction"
-    "OpFunctionParameter"
-    "OpFunctionEnd"
-    "OpFunctionCall"
-    "OpVariable"
-    "OpImageTexelPointer"
-    "OpLoad"
-    "OpStore"
-    "OpCopyMemory"
-    "OpCopyMemorySized"
-    "OpAccessChain"
-    "OpInBoundsAccessChain"
-    "OpPtrAccessChain"
-    "OpArrayLength"
-    "OpGenericPtrMemSemantics"
-    "OpInBoundsPtrAccessChain"
-    "OpDecorate"
-    "OpMemberDecorate"
-    "OpDecorationGroup"
-    "OpGroupDecorate"
-    "OpGroupMemberDecorate"
-    "OpVectorExtractDynamic"
-    "OpVectorInsertDynamic"
-    "OpVectorShuffle"
-    "OpCompositeConstruct"
-    "OpCompositeExtract"
-    "OpCompositeInsert"
-    "OpCopyObject"
-    "OpTranspose"
-    "OpSampledImage"
-    "OpImageSampleImplicitLod"
-    "OpImageSampleExplicitLod"
-    "OpImageSampleDrefImplicitLod"
-    "OpImageSampleDrefExplicitLod"
-    "OpImageSampleProjImplicitLod"
-    "OpImageSampleProjExplicitLod"
-    "OpImageSampleProjDrefImplicitLod"
-    "OpImageSampleProjDrefExplicitLod"
-    "OpImageFetch"
-    "OpImageGather"
-    "OpImageDrefGather"
-    "OpImageRead"
-    "OpImageWrite"
-    "OpImage"
-    "OpImageQueryFormat"
-    "OpImageQueryOrder"
-    "OpImageQuerySizeLod"
-    "OpImageQuerySize"
-    "OpImageQueryLod"
-    "OpImageQueryLevels"
-    "OpImageQuerySamples"
-    "OpConvertFToU"
-    "OpConvertFToS"
-    "OpConvertSToF"
-    "OpConvertUToF"
-    "OpUConvert"
-    "OpSConvert"
-    "OpFConvert"
-    "OpQuantizeToF16"
-    "OpConvertPtrToU"
-    "OpSatConvertSToU"
-    "OpSatConvertUToS"
-    "OpConvertUToPtr"
-    "OpPtrCastToGeneric"
-    "OpGenericCastToPtr"
-    "OpGenericCastToPtrExplicit"
-    "OpBitcast"
-    "OpSNegate"
-    "OpFNegate"
-    "OpIAdd"
-    "OpFAdd"
-    "OpISub"
-    "OpFSub"
-    "OpIMul"
-    "OpFMul"
-    "OpUDiv"
-    "OpSDiv"
-    "OpFDiv"
-    "OpUMod"
-    "OpSRem"
-    "OpSMod"
-    "OpFRem"
-    "OpFMod"
-    "OpVectorTimesScalar"
-    "OpMatrixTimesScalar"
-    "OpVectorTimesMatrix"
-    "OpMatrixTimesVector"
-    "OpMatrixTimesMatrix"
-    "OpOuterProduct"
-    "OpDot"
-    "OpIAddCarry"
-    "OpISubBorrow"
-    "OpUMulExtended"
-    "OpSMulExtended"
-    "OpAny"
-    "OpAll"
-    "OpIsNan"
-    "OpIsInf"
-    "OpIsFinite"
-    "OpIsNormal"
-    "OpSignBitSet"
-    "OpLessOrGreater"
-    "OpOrdered"
-    "OpUnordered"
-    "OpLogicalEqual"
-    "OpLogicalNotEqual"
-    "OpLogicalOr"
-    "OpLogicalAnd"
-    "OpLogicalNot"
-    "OpSelect"
-    "OpIEqual"
-    "OpINotEqual"
-    "OpUGreaterThan"
-    "OpSGreaterThan"
-    "OpUGreaterThanEqual"
-    "OpSGreaterThanEqual"
-    "OpULessThan"
-    "OpSLessThan"
-    "OpULessThanEqual"
-    "OpSLessThanEqual"
-    "OpFOrdEqual"
-    "OpFUnordEqual"
-    "OpFOrdNotEqual"
-    "OpFUnordNotEqual"
-    "OpFOrdLessThan"
-    "OpFUnordLessThan"
-    "OpFOrdGreaterThan"
-    "OpFUnordGreaterThan"
-    "OpFOrdLessThanEqual"
-    "OpFUnordLessThanEqual"
-    "OpFOrdGreaterThanEqual"
-    "OpFUnordGreaterThanEqual"
-    "OpShiftRightLogical"
-    "OpShiftRightArithmetic"
-    "OpShiftLeftLogical"
-    "OpBitwiseOr"
-    "OpBitwiseXor"
-    "OpBitwiseAnd"
-    "OpNot"
-    "OpBitFieldInsert"
-    "OpBitFieldSExtract"
-    "OpBitFieldUExtract"
-    "OpBitReverse"
-    "OpBitCount"
-    "OpDPdx"
-    "OpDPdy"
-    "OpFwidth"
-    "OpDPdxFine"
-    "OpDPdyFine"
-    "OpFwidthFine"
-    "OpDPdxCoarse"
-    "OpDPdyCoarse"
-    "OpFwidthCoarse"
-    "OpEmitVertex"
-    "OpEndPrimitive"
-    "OpEmitStreamVertex"
-    "OpEndStreamPrimitive"
-    "OpControlBarrier"
-    "OpMemoryBarrier"
-    "OpAtomicLoad"
-    "OpAtomicStore"
-    "OpAtomicExchange"
-    "OpAtomicCompareExchange"
-    "OpAtomicCompareExchangeWeak"
-    "OpAtomicIIncrement"
-    "OpAtomicIDecrement"
-    "OpAtomicIAdd"
-    "OpAtomicISub"
-    "OpAtomicSMin"
-    "OpAtomicUMin"
-    "OpAtomicSMax"
-    "OpAtomicUMax"
-    "OpAtomicAnd"
-    "OpAtomicOr"
-    "OpAtomicXor"
-    "OpPhi"
-    "OpLoopMerge"
-    "OpSelectionMerge"
-    "OpLabel"
-    "OpBranch"
-    "OpBranchConditional"
-    "OpSwitch"
-    "OpKill"
-    "OpReturn"
-    "OpReturnValue"
-    "OpUnreachable"
-    "OpLifetimeStart"
-    "OpLifetimeStop"
-    "OpGroupAsyncCopy"
-    "OpGroupWaitEvents"
-    "OpGroupAll"
-    "OpGroupAny"
-    "OpGroupBroadcast"
-    "OpGroupIAdd"
-    "OpGroupFAdd"
-    "OpGroupFMin"
-    "OpGroupUMin"
-    "OpGroupSMin"
-    "OpGroupFMax"
-    "OpGroupUMax"
-    "OpGroupSMax"
-    "OpReadPipe"
-    "OpWritePipe"
-    "OpReservedReadPipe"
-    "OpReservedWritePipe"
-    "OpReserveReadPipePackets"
-    "OpReserveWritePipePackets"
-    "OpCommitReadPipe"
-    "OpCommitWritePipe"
-    "OpIsValidReserveId"
-    "OpGetNumPipePackets"
-    "OpGetMaxPipePackets"
-    "OpGroupReserveReadPipePackets"
-    "OpGroupReserveWritePipePackets"
-    "OpGroupCommitReadPipe"
-    "OpGroupCommitWritePipe"
-    "OpEnqueueMarker"
-    "OpEnqueueKernel"
-    "OpGetKernelNDrangeSubGroupCount"
-    "OpGetKernelNDrangeMaxSubGroupSize"
-    "OpGetKernelWorkGroupSize"
-    "OpGetKernelPreferredWorkGroupSizeMultiple"
-    "OpRetainEvent"
-    "OpReleaseEvent"
-    "OpCreateUserEvent"
-    "OpIsValidEvent"
-    "OpSetUserEventStatus"
-    "OpCaptureEventProfilingInfo"
-    "OpGetDefaultQueue"
-    "OpBuildNDRange"
-    "OpImageSparseSampleImplicitLod"
-    "OpImageSparseSampleExplicitLod"
-    "OpImageSparseSampleDrefImplicitLod"
-    "OpImageSparseSampleDrefExplicitLod"
-    "OpImageSparseSampleProjImplicitLod"
-    "OpImageSparseSampleProjExplicitLod"
-    "OpImageSparseSampleProjDrefImplicitLod"
-    "OpImageSparseSampleProjDrefExplicitLod"
-    "OpImageSparseFetch"
-    "OpImageSparseGather"
-    "OpImageSparseDrefGather"
-    "OpImageSparseTexelsResident"
-    "OpNoLine"
-    "OpAtomicFlagTestAndSet"
-    "OpAtomicFlagClear"
-    "OpImageSparseRead"
-    "OpSizeOf"
-    "OpTypePipeStorage"
-    "OpConstantPipeStorage"
-    "OpCreatePipeFromPipeStorage"
-    "OpGetKernelLocalSizeForSubgroupCount"
-    "OpGetKernelMaxNumSubgroups"
-    "OpTypeNamedBarrier"
-    "OpNamedBarrierInitialize"
-    "OpMemoryNamedBarrier"
-    "OpModuleProcessed"
-    "OpExecutionModeId"
-    "OpDecorateId"
-    "OpGroupNonUniformElect"
-    "OpGroupNonUniformAll"
-    "OpGroupNonUniformAny"
-    "OpGroupNonUniformAllEqual"
-    "OpGroupNonUniformBroadcast"
-    "OpGroupNonUniformBroadcastFirst"
-    "OpGroupNonUniformBallot"
-    "OpGroupNonUniformInverseBallot"
-    "OpGroupNonUniformBallotBitExtract"
-    "OpGroupNonUniformBallotBitCount"
-    "OpGroupNonUniformBallotFindLSB"
-    "OpGroupNonUniformBallotFindMSB"
-    "OpGroupNonUniformShuffle"
-    "OpGroupNonUniformShuffleXor"
-    "OpGroupNonUniformShuffleUp"
-    "OpGroupNonUniformShuffleDown"
-    "OpGroupNonUniformIAdd"
-    "OpGroupNonUniformFAdd"
-    "OpGroupNonUniformIMul"
-    "OpGroupNonUniformFMul"
-    "OpGroupNonUniformSMin"
-    "OpGroupNonUniformUMin"
-    "OpGroupNonUniformFMin"
-    "OpGroupNonUniformSMax"
-    "OpGroupNonUniformUMax"
-    "OpGroupNonUniformFMax"
-    "OpGroupNonUniformBitwiseAnd"
-    "OpGroupNonUniformBitwiseOr"
-    "OpGroupNonUniformBitwiseXor"
-    "OpGroupNonUniformLogicalAnd"
-    "OpGroupNonUniformLogicalOr"
-    "OpGroupNonUniformLogicalXor"
-    "OpGroupNonUniformQuadBroadcast"
-    "OpGroupNonUniformQuadSwap"
-    "OpCopyLogical"
-    "OpPtrEqual"
-    "OpPtrNotEqual"
-    "OpPtrDiff"
-    "OpTerminateInvocation"
-    "OpSubgroupBallotKHR"
-    "OpSubgroupFirstInvocationKHR"
-    "OpSubgroupAllKHR"
-    "OpSubgroupAnyKHR"
-    "OpSubgroupAllEqualKHR"
-    "OpSubgroupReadInvocationKHR"
-    "OpTraceRayKHR"
-    "OpExecuteCallableKHR"
-    "OpConvertUToAccelerationStructureKHR"
-    "OpIgnoreIntersectionKHR"
-    "OpTerminateRayKHR"
-    "OpTypeRayQueryKHR"
-    "OpRayQueryInitializeKHR"
-    "OpRayQueryTerminateKHR"
-    "OpRayQueryGenerateIntersectionKHR"
-    "OpRayQueryConfirmIntersectionKHR"
-    "OpRayQueryProceedKHR"
-    "OpRayQueryGetIntersectionTypeKHR"
-    "OpGroupIAddNonUniformAMD"
-    "OpGroupFAddNonUniformAMD"
-    "OpGroupFMinNonUniformAMD"
-    "OpGroupUMinNonUniformAMD"
-    "OpGroupSMinNonUniformAMD"
-    "OpGroupFMaxNonUniformAMD"
-    "OpGroupUMaxNonUniformAMD"
-    "OpGroupSMaxNonUniformAMD"
-    "OpFragmentMaskFetchAMD"
-    "OpFragmentFetchAMD"
-    "OpReadClockKHR"
-    "OpImageSampleFootprintNV"
-    "OpGroupNonUniformPartitionNV"
-    "OpWritePackedPrimitiveIndices4x8NV"
-    "OpReportIntersectionNV"
-    "OpReportIntersectionKHR"
-    "OpIgnoreIntersectionNV"
-    "OpTerminateRayNV"
-    "OpTraceNV"
-    "OpTypeAccelerationStructureNV"
-    "OpTypeAccelerationStructureKHR"
-    "OpExecuteCallableNV"
-    "OpTypeCooperativeMatrixNV"
-    "OpCooperativeMatrixLoadNV"
-    "OpCooperativeMatrixStoreNV"
-    "OpCooperativeMatrixMulAddNV"
-    "OpCooperativeMatrixLengthNV"
-    "OpBeginInvocationInterlockEXT"
-    "OpEndInvocationInterlockEXT"
-    "OpDemoteToHelperInvocationEXT"
-    "OpIsHelperInvocationEXT"
-    "OpSubgroupShuffleINTEL"
-    "OpSubgroupShuffleDownINTEL"
-    "OpSubgroupShuffleUpINTEL"
-    "OpSubgroupShuffleXorINTEL"
-    "OpSubgroupBlockReadINTEL"
-    "OpSubgroupBlockWriteINTEL"
-    "OpSubgroupImageBlockReadINTEL"
-    "OpSubgroupImageBlockWriteINTEL"
-    "OpSubgroupImageMediaBlockReadINTEL"
-    "OpSubgroupImageMediaBlockWriteINTEL"
-    "OpUCountLeadingZerosINTEL"
-    "OpUCountTrailingZerosINTEL"
-    "OpAbsISubINTEL"
-    "OpAbsUSubINTEL"
-    "OpIAddSatINTEL"
-    "OpUAddSatINTEL"
-    "OpIAverageINTEL"
-    "OpUAverageINTEL"
-    "OpIAverageRoundedINTEL"
-    "OpUAverageRoundedINTEL"
-    "OpISubSatINTEL"
-    "OpUSubSatINTEL"
-    "OpIMul32x16INTEL"
-    "OpUMul32x16INTEL"
-    "OpFunctionPointerINTEL"
-    "OpFunctionPointerCallINTEL"
-    "OpDecorateString"
-    "OpDecorateStringGOOGLE"
-    "OpMemberDecorateString"
-    "OpMemberDecorateStringGOOGLE"
-    "OpVmeImageINTEL"
-    "OpTypeVmeImageINTEL"
-    "OpTypeAvcImePayloadINTEL"
-    "OpTypeAvcRefPayloadINTEL"
-    "OpTypeAvcSicPayloadINTEL"
-    "OpTypeAvcMcePayloadINTEL"
-    "OpTypeAvcMceResultINTEL"
-    "OpTypeAvcImeResultINTEL"
-    "OpTypeAvcImeResultSingleReferenceStreamoutINTEL"
-    "OpTypeAvcImeResultDualReferenceStreamoutINTEL"
-    "OpTypeAvcImeSingleReferenceStreaminINTEL"
-    "OpTypeAvcImeDualReferenceStreaminINTEL"
-    "OpTypeAvcRefResultINTEL"
-    "OpTypeAvcSicResultINTEL"
-    "OpSubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL"
-    "OpSubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL"
-    "OpSubgroupAvcMceGetDefaultInterShapePenaltyINTEL"
-    "OpSubgroupAvcMceSetInterShapePenaltyINTEL"
-    "OpSubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL"
-    "OpSubgroupAvcMceSetInterDirectionPenaltyINTEL"
-    "OpSubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL"
-    "OpSubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL"
-    "OpSubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL"
-    "OpSubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL"
-    "OpSubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL"
-    "OpSubgroupAvcMceSetMotionVectorCostFunctionINTEL"
-    "OpSubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL"
-    "OpSubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL"
-    "OpSubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL"
-    "OpSubgroupAvcMceSetAcOnlyHaarINTEL"
-    "OpSubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL"
-    "OpSubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL"
-    "OpSubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL"
-    "OpSubgroupAvcMceConvertToImePayloadINTEL"
-    "OpSubgroupAvcMceConvertToImeResultINTEL"
-    "OpSubgroupAvcMceConvertToRefPayloadINTEL"
-    "OpSubgroupAvcMceConvertToRefResultINTEL"
-    "OpSubgroupAvcMceConvertToSicPayloadINTEL"
-    "OpSubgroupAvcMceConvertToSicResultINTEL"
-    "OpSubgroupAvcMceGetMotionVectorsINTEL"
-    "OpSubgroupAvcMceGetInterDistortionsINTEL"
-    "OpSubgroupAvcMceGetBestInterDistortionsINTEL"
-    "OpSubgroupAvcMceGetInterMajorShapeINTEL"
-    "OpSubgroupAvcMceGetInterMinorShapeINTEL"
-    "OpSubgroupAvcMceGetInterDirectionsINTEL"
-    "OpSubgroupAvcMceGetInterMotionVectorCountINTEL"
-    "OpSubgroupAvcMceGetInterReferenceIdsINTEL"
-    "OpSubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL"
-    "OpSubgroupAvcImeInitializeINTEL"
-    "OpSubgroupAvcImeSetSingleReferenceINTEL"
-    "OpSubgroupAvcImeSetDualReferenceINTEL"
-    "OpSubgroupAvcImeRefWindowSizeINTEL"
-    "OpSubgroupAvcImeAdjustRefOffsetINTEL"
-    "OpSubgroupAvcImeConvertToMcePayloadINTEL"
-    "OpSubgroupAvcImeSetMaxMotionVectorCountINTEL"
-    "OpSubgroupAvcImeSetUnidirectionalMixDisableINTEL"
-    "OpSubgroupAvcImeSetEarlySearchTerminationThresholdINTEL"
-    "OpSubgroupAvcImeSetWeightedSadINTEL"
-    "OpSubgroupAvcImeEvaluateWithSingleReferenceINTEL"
-    "OpSubgroupAvcImeEvaluateWithDualReferenceINTEL"
-    "OpSubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL"
-    "OpSubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL"
-    "OpSubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL"
-    "OpSubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL"
-    "OpSubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL"
-    "OpSubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL"
-    "OpSubgroupAvcImeConvertToMceResultINTEL"
-    "OpSubgroupAvcImeGetSingleReferenceStreaminINTEL"
-    "OpSubgroupAvcImeGetDualReferenceStreaminINTEL"
-    "OpSubgroupAvcImeStripSingleReferenceStreamoutINTEL"
-    "OpSubgroupAvcImeStripDualReferenceStreamoutINTEL"
-    "OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL"
-    "OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL"
-    "OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL"
-    "OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL"
-    "OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL"
-    "OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL"
-    "OpSubgroupAvcImeGetBorderReachedINTEL"
-    "OpSubgroupAvcImeGetTruncatedSearchIndicationINTEL"
-    "OpSubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL"
-    "OpSubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL"
-    "OpSubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL"
-    "OpSubgroupAvcFmeInitializeINTEL"
-    "OpSubgroupAvcBmeInitializeINTEL"
-    "OpSubgroupAvcRefConvertToMcePayloadINTEL"
-    "OpSubgroupAvcRefSetBidirectionalMixDisableINTEL"
-    "OpSubgroupAvcRefSetBilinearFilterEnableINTEL"
-    "OpSubgroupAvcRefEvaluateWithSingleReferenceINTEL"
-    "OpSubgroupAvcRefEvaluateWithDualReferenceINTEL"
-    "OpSubgroupAvcRefEvaluateWithMultiReferenceINTEL"
-    "OpSubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL"
-    "OpSubgroupAvcRefConvertToMceResultINTEL"
-    "OpSubgroupAvcSicInitializeINTEL"
-    "OpSubgroupAvcSicConfigureSkcINTEL"
-    "OpSubgroupAvcSicConfigureIpeLumaINTEL"
-    "OpSubgroupAvcSicConfigureIpeLumaChromaINTEL"
-    "OpSubgroupAvcSicGetMotionVectorMaskINTEL"
-    "OpSubgroupAvcSicConvertToMcePayloadINTEL"
-    "OpSubgroupAvcSicSetIntraLumaShapePenaltyINTEL"
-    "OpSubgroupAvcSicSetIntraLumaModeCostFunctionINTEL"
-    "OpSubgroupAvcSicSetIntraChromaModeCostFunctionINTEL"
-    "OpSubgroupAvcSicSetBilinearFilterEnableINTEL"
-    "OpSubgroupAvcSicSetSkcForwardTransformEnableINTEL"
-    "OpSubgroupAvcSicSetBlockBasedRawSkipSadINTEL"
-    "OpSubgroupAvcSicEvaluateIpeINTEL"
-    "OpSubgroupAvcSicEvaluateWithSingleReferenceINTEL"
-    "OpSubgroupAvcSicEvaluateWithDualReferenceINTEL"
-    "OpSubgroupAvcSicEvaluateWithMultiReferenceINTEL"
-    "OpSubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL"
-    "OpSubgroupAvcSicConvertToMceResultINTEL"
-    "OpSubgroupAvcSicGetIpeLumaShapeINTEL"
-    "OpSubgroupAvcSicGetBestIpeLumaDistortionINTEL"
-    "OpSubgroupAvcSicGetBestIpeChromaDistortionINTEL"
-    "OpSubgroupAvcSicGetPackedIpeLumaModesINTEL"
-    "OpSubgroupAvcSicGetIpeChromaModeINTEL"
-    "OpSubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL"
-    "OpSubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL"
-    "OpSubgroupAvcSicGetInterRawSadsINTEL"
-    "OpLoopControlINTEL"
-    "OpReadPipeBlockingINTEL"
-    "OpWritePipeBlockingINTEL"
-    "OpFPGARegINTEL"
-    "OpRayQueryGetRayTMinKHR"
-    "OpRayQueryGetRayFlagsKHR"
-    "OpRayQueryGetIntersectionTKHR"
-    "OpRayQueryGetIntersectionInstanceCustomIndexKHR"
-    "OpRayQueryGetIntersectionInstanceIdKHR"
-    "OpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR"
-    "OpRayQueryGetIntersectionGeometryIndexKHR"
-    "OpRayQueryGetIntersectionPrimitiveIndexKHR"
-    "OpRayQueryGetIntersectionBarycentricsKHR"
-    "OpRayQueryGetIntersectionFrontFaceKHR"
-    "OpRayQueryGetIntersectionCandidateAABBOpaqueKHR"
-    "OpRayQueryGetIntersectionObjectRayDirectionKHR"
-    "OpRayQueryGetIntersectionObjectRayOriginKHR"
-    "OpRayQueryGetWorldRayDirectionKHR"
-    "OpRayQueryGetWorldRayOriginKHR"
-    "OpRayQueryGetIntersectionObjectToWorldKHR"
-    "OpRayQueryGetIntersectionWorldToObjectKHR"
-    "OpAtomicFAddEXT"))
-
-(defconst spirv-mode--instruction-operands
+(defconst spirv-mode--instructions
   #s(hash-table size 730 test equal rehash-size 1.5 rehash-threshold 0.8125 data
-                ("OpNop" nil "OpUndef"
-                 ("IdResultType")
+                ("OpNop"
+                 (nil nil)
+                 "OpUndef"
+                 (t
+                  ("IdResultType"))
                  "OpSourceContinued"
-                 ("Continued Source")
+                 (nil
+                  ("Continued Source"))
                  "OpSource"
-                 ("SourceLanguage" "Version" "File" "Source")
+                 (nil
+                  ("SourceLanguage" "Version" "File" "Source"))
                  "OpSourceExtension"
-                 ("Extension")
+                 (nil
+                  ("Extension"))
                  "OpName"
-                 ("Target" "Name")
+                 (nil
+                  ("Target" "Name"))
                  "OpMemberName"
-                 ("Type" "Member" "Name")
+                 (nil
+                  ("Type" "Member" "Name"))
                  "OpString"
-                 ("String")
+                 (t
+                  ("String"))
                  "OpLine"
-                 ("File" "Line" "Column")
+                 (nil
+                  ("File" "Line" "Column"))
                  "OpExtension"
-                 ("Name")
+                 (nil
+                  ("Name"))
                  "OpExtInstImport"
-                 ("Name")
+                 (t
+                  ("Name"))
                  "OpExtInst"
-                 ("IdResultType" "Set" "Instruction" "Operand 1" "Operand 2" "...")
+                 (t
+                  ("IdResultType" "Set" "Instruction" "Operand 1" "Operand 2" "..."))
                  "OpMemoryModel"
-                 ("AddressingModel" "MemoryModel")
+                 (nil
+                  ("AddressingModel" "MemoryModel"))
                  "OpEntryPoint"
-                 ("ExecutionModel" "Entry Point" "Name" "Interface" "...")
+                 (nil
+                  ("ExecutionModel" "Entry Point" "Name" "Interface" "..."))
                  "OpExecutionMode"
-                 ("Entry Point" "Mode")
+                 (nil
+                  ("Entry Point" "Mode"))
                  "OpCapability"
-                 ("Capability")
-                 "OpTypeVoid" nil "OpTypeBool" nil "OpTypeInt"
-                 ("Width" "Signedness")
+                 (nil
+                  ("Capability"))
+                 "OpTypeVoid"
+                 (t nil)
+                 "OpTypeBool"
+                 (t nil)
+                 "OpTypeInt"
+                 (t
+                  ("Width" "Signedness"))
                  "OpTypeFloat"
-                 ("Width")
+                 (t
+                  ("Width"))
                  "OpTypeVector"
-                 ("Component Type" "Component Count")
+                 (t
+                  ("Component Type" "Component Count"))
                  "OpTypeMatrix"
-                 ("Column Type" "Column Count")
+                 (t
+                  ("Column Type" "Column Count"))
                  "OpTypeImage"
-                 ("Sampled Type" "Dim" "Depth" "Arrayed" "MS" "Sampled" "ImageFormat" "AccessQualifier")
-                 "OpTypeSampler" nil "OpTypeSampledImage"
-                 ("Image Type")
+                 (t
+                  ("Sampled Type" "Dim" "Depth" "Arrayed" "MS" "Sampled" "ImageFormat" "AccessQualifier"))
+                 "OpTypeSampler"
+                 (t nil)
+                 "OpTypeSampledImage"
+                 (t
+                  ("Image Type"))
                  "OpTypeArray"
-                 ("Element Type" "Length")
+                 (t
+                  ("Element Type" "Length"))
                  "OpTypeRuntimeArray"
-                 ("Element Type")
+                 (t
+                  ("Element Type"))
                  "OpTypeStruct"
-                 ("Member 0 type" "member 1 type" "...")
+                 (t
+                  ("Member 0 type" "member 1 type" "..."))
                  "OpTypeOpaque"
-                 ("The name of the opaque type.")
+                 (t
+                  ("The name of the opaque type."))
                  "OpTypePointer"
-                 ("StorageClass" "Type")
+                 (t
+                  ("StorageClass" "Type"))
                  "OpTypeFunction"
-                 ("Return Type" "Parameter 0 Type" "Parameter 1 Type" "...")
-                 "OpTypeEvent" nil "OpTypeDeviceEvent" nil "OpTypeReserveId" nil "OpTypeQueue" nil "OpTypePipe"
-                 ("Qualifier")
+                 (t
+                  ("Return Type" "Parameter 0 Type" "Parameter 1 Type" "..."))
+                 "OpTypeEvent"
+                 (t nil)
+                 "OpTypeDeviceEvent"
+                 (t nil)
+                 "OpTypeReserveId"
+                 (t nil)
+                 "OpTypeQueue"
+                 (t nil)
+                 "OpTypePipe"
+                 (t
+                  ("Qualifier"))
                  "OpTypeForwardPointer"
-                 ("Pointer Type" "StorageClass")
+                 (nil
+                  ("Pointer Type" "StorageClass"))
                  "OpConstantTrue"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpConstantFalse"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpConstant"
-                 ("IdResultType" "Value")
+                 (t
+                  ("IdResultType" "Value"))
                  "OpConstantComposite"
-                 ("IdResultType" "Constituents" "...")
+                 (t
+                  ("IdResultType" "Constituents" "..."))
                  "OpConstantSampler"
-                 ("IdResultType" "SamplerAddressingMode" "Param" "SamplerFilterMode")
+                 (t
+                  ("IdResultType" "SamplerAddressingMode" "Param" "SamplerFilterMode"))
                  "OpConstantNull"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSpecConstantTrue"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSpecConstantFalse"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSpecConstant"
-                 ("IdResultType" "Value")
+                 (t
+                  ("IdResultType" "Value"))
                  "OpSpecConstantComposite"
-                 ("IdResultType" "Constituents" "...")
+                 (t
+                  ("IdResultType" "Constituents" "..."))
                  "OpSpecConstantOp"
-                 ("IdResultType" "Opcode")
+                 (t
+                  ("IdResultType" "Opcode"))
                  "OpFunction"
-                 ("IdResultType" "FunctionControl" "Function Type")
+                 (t
+                  ("IdResultType" "FunctionControl" "Function Type"))
                  "OpFunctionParameter"
-                 ("IdResultType")
-                 "OpFunctionEnd" nil "OpFunctionCall"
-                 ("IdResultType" "Function" "Argument 0" "Argument 1" "...")
+                 (t
+                  ("IdResultType"))
+                 "OpFunctionEnd"
+                 (nil nil)
+                 "OpFunctionCall"
+                 (t
+                  ("IdResultType" "Function" "Argument 0" "Argument 1" "..."))
                  "OpVariable"
-                 ("IdResultType" "StorageClass" "Initializer")
+                 (t
+                  ("IdResultType" "StorageClass" "Initializer"))
                  "OpImageTexelPointer"
-                 ("IdResultType" "Image" "Coordinate" "Sample")
+                 (t
+                  ("IdResultType" "Image" "Coordinate" "Sample"))
                  "OpLoad"
-                 ("IdResultType" "Pointer" "MemoryAccess")
+                 (t
+                  ("IdResultType" "Pointer" "MemoryAccess"))
                  "OpStore"
-                 ("Pointer" "Object" "MemoryAccess")
+                 (nil
+                  ("Pointer" "Object" "MemoryAccess"))
                  "OpCopyMemory"
-                 ("Target" "Source" "MemoryAccess" "MemoryAccess")
+                 (nil
+                  ("Target" "Source" "MemoryAccess" "MemoryAccess"))
                  "OpCopyMemorySized"
-                 ("Target" "Source" "Size" "MemoryAccess" "MemoryAccess")
+                 (nil
+                  ("Target" "Source" "Size" "MemoryAccess" "MemoryAccess"))
                  "OpAccessChain"
-                 ("IdResultType" "Base" "Indexes" "...")
+                 (t
+                  ("IdResultType" "Base" "Indexes" "..."))
                  "OpInBoundsAccessChain"
-                 ("IdResultType" "Base" "Indexes" "...")
+                 (t
+                  ("IdResultType" "Base" "Indexes" "..."))
                  "OpPtrAccessChain"
-                 ("IdResultType" "Base" "Element" "Indexes" "...")
+                 (t
+                  ("IdResultType" "Base" "Element" "Indexes" "..."))
                  "OpArrayLength"
-                 ("IdResultType" "Structure" "Array member")
+                 (t
+                  ("IdResultType" "Structure" "Array member"))
                  "OpGenericPtrMemSemantics"
-                 ("IdResultType" "Pointer")
+                 (t
+                  ("IdResultType" "Pointer"))
                  "OpInBoundsPtrAccessChain"
-                 ("IdResultType" "Base" "Element" "Indexes" "...")
+                 (t
+                  ("IdResultType" "Base" "Element" "Indexes" "..."))
                  "OpDecorate"
-                 ("Target" "Decoration")
+                 (nil
+                  ("Target" "Decoration"))
                  "OpMemberDecorate"
-                 ("Structure Type" "Member" "Decoration")
-                 "OpDecorationGroup" nil "OpGroupDecorate"
-                 ("Decoration Group" "Targets" "...")
+                 (nil
+                  ("Structure Type" "Member" "Decoration"))
+                 "OpDecorationGroup"
+                 (t nil)
+                 "OpGroupDecorate"
+                 (nil
+                  ("Decoration Group" "Targets" "..."))
                  "OpGroupMemberDecorate"
-                 ("Decoration Group" "Targets" "...")
+                 (nil
+                  ("Decoration Group" "Targets" "..."))
                  "OpVectorExtractDynamic"
-                 ("IdResultType" "Vector" "Index")
+                 (t
+                  ("IdResultType" "Vector" "Index"))
                  "OpVectorInsertDynamic"
-                 ("IdResultType" "Vector" "Component" "Index")
+                 (t
+                  ("IdResultType" "Vector" "Component" "Index"))
                  "OpVectorShuffle"
-                 ("IdResultType" "Vector 1" "Vector 2" "Components" "...")
+                 (t
+                  ("IdResultType" "Vector 1" "Vector 2" "Components" "..."))
                  "OpCompositeConstruct"
-                 ("IdResultType" "Constituents" "...")
+                 (t
+                  ("IdResultType" "Constituents" "..."))
                  "OpCompositeExtract"
-                 ("IdResultType" "Composite" "Indexes" "...")
+                 (t
+                  ("IdResultType" "Composite" "Indexes" "..."))
                  "OpCompositeInsert"
-                 ("IdResultType" "Object" "Composite" "Indexes" "...")
+                 (t
+                  ("IdResultType" "Object" "Composite" "Indexes" "..."))
                  "OpCopyObject"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpTranspose"
-                 ("IdResultType" "Matrix")
+                 (t
+                  ("IdResultType" "Matrix"))
                  "OpSampledImage"
-                 ("IdResultType" "Image" "Sampler")
+                 (t
+                  ("IdResultType" "Image" "Sampler"))
                  "OpImageSampleImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSampleExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSampleDrefImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSampleDrefExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSampleProjImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSampleProjExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSampleProjDrefImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSampleProjDrefExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageFetch"
-                 ("IdResultType" "Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
                  "OpImageGather"
-                 ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands"))
                  "OpImageDrefGather"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageRead"
-                 ("IdResultType" "Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
                  "OpImageWrite"
-                 ("Image" "Coordinate" "Texel" "ImageOperands")
+                 (nil
+                  ("Image" "Coordinate" "Texel" "ImageOperands"))
                  "OpImage"
-                 ("IdResultType" "Sampled Image")
+                 (t
+                  ("IdResultType" "Sampled Image"))
                  "OpImageQueryFormat"
-                 ("IdResultType" "Image")
+                 (t
+                  ("IdResultType" "Image"))
                  "OpImageQueryOrder"
-                 ("IdResultType" "Image")
+                 (t
+                  ("IdResultType" "Image"))
                  "OpImageQuerySizeLod"
-                 ("IdResultType" "Image" "Level of Detail")
+                 (t
+                  ("IdResultType" "Image" "Level of Detail"))
                  "OpImageQuerySize"
-                 ("IdResultType" "Image")
+                 (t
+                  ("IdResultType" "Image"))
                  "OpImageQueryLod"
-                 ("IdResultType" "Sampled Image" "Coordinate")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate"))
                  "OpImageQueryLevels"
-                 ("IdResultType" "Image")
+                 (t
+                  ("IdResultType" "Image"))
                  "OpImageQuerySamples"
-                 ("IdResultType" "Image")
+                 (t
+                  ("IdResultType" "Image"))
                  "OpConvertFToU"
-                 ("IdResultType" "Float Value")
+                 (t
+                  ("IdResultType" "Float Value"))
                  "OpConvertFToS"
-                 ("IdResultType" "Float Value")
+                 (t
+                  ("IdResultType" "Float Value"))
                  "OpConvertSToF"
-                 ("IdResultType" "Signed Value")
+                 (t
+                  ("IdResultType" "Signed Value"))
                  "OpConvertUToF"
-                 ("IdResultType" "Unsigned Value")
+                 (t
+                  ("IdResultType" "Unsigned Value"))
                  "OpUConvert"
-                 ("IdResultType" "Unsigned Value")
+                 (t
+                  ("IdResultType" "Unsigned Value"))
                  "OpSConvert"
-                 ("IdResultType" "Signed Value")
+                 (t
+                  ("IdResultType" "Signed Value"))
                  "OpFConvert"
-                 ("IdResultType" "Float Value")
+                 (t
+                  ("IdResultType" "Float Value"))
                  "OpQuantizeToF16"
-                 ("IdResultType" "Value")
+                 (t
+                  ("IdResultType" "Value"))
                  "OpConvertPtrToU"
-                 ("IdResultType" "Pointer")
+                 (t
+                  ("IdResultType" "Pointer"))
                  "OpSatConvertSToU"
-                 ("IdResultType" "Signed Value")
+                 (t
+                  ("IdResultType" "Signed Value"))
                  "OpSatConvertUToS"
-                 ("IdResultType" "Unsigned Value")
+                 (t
+                  ("IdResultType" "Unsigned Value"))
                  "OpConvertUToPtr"
-                 ("IdResultType" "Integer Value")
+                 (t
+                  ("IdResultType" "Integer Value"))
                  "OpPtrCastToGeneric"
-                 ("IdResultType" "Pointer")
+                 (t
+                  ("IdResultType" "Pointer"))
                  "OpGenericCastToPtr"
-                 ("IdResultType" "Pointer")
+                 (t
+                  ("IdResultType" "Pointer"))
                  "OpGenericCastToPtrExplicit"
-                 ("IdResultType" "Pointer" "Storage")
+                 (t
+                  ("IdResultType" "Pointer" "Storage"))
                  "OpBitcast"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpSNegate"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpFNegate"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpIAdd"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFAdd"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpISub"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFSub"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpIMul"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFMul"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUDiv"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSDiv"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFDiv"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUMod"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSRem"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSMod"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFRem"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFMod"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpVectorTimesScalar"
-                 ("IdResultType" "Vector" "Scalar")
+                 (t
+                  ("IdResultType" "Vector" "Scalar"))
                  "OpMatrixTimesScalar"
-                 ("IdResultType" "Matrix" "Scalar")
+                 (t
+                  ("IdResultType" "Matrix" "Scalar"))
                  "OpVectorTimesMatrix"
-                 ("IdResultType" "Vector" "Matrix")
+                 (t
+                  ("IdResultType" "Vector" "Matrix"))
                  "OpMatrixTimesVector"
-                 ("IdResultType" "Matrix" "Vector")
+                 (t
+                  ("IdResultType" "Matrix" "Vector"))
                  "OpMatrixTimesMatrix"
-                 ("IdResultType" "LeftMatrix" "RightMatrix")
+                 (t
+                  ("IdResultType" "LeftMatrix" "RightMatrix"))
                  "OpOuterProduct"
-                 ("IdResultType" "Vector 1" "Vector 2")
+                 (t
+                  ("IdResultType" "Vector 1" "Vector 2"))
                  "OpDot"
-                 ("IdResultType" "Vector 1" "Vector 2")
+                 (t
+                  ("IdResultType" "Vector 1" "Vector 2"))
                  "OpIAddCarry"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpISubBorrow"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUMulExtended"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSMulExtended"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpAny"
-                 ("IdResultType" "Vector")
+                 (t
+                  ("IdResultType" "Vector"))
                  "OpAll"
-                 ("IdResultType" "Vector")
+                 (t
+                  ("IdResultType" "Vector"))
                  "OpIsNan"
-                 ("IdResultType" "x")
+                 (t
+                  ("IdResultType" "x"))
                  "OpIsInf"
-                 ("IdResultType" "x")
+                 (t
+                  ("IdResultType" "x"))
                  "OpIsFinite"
-                 ("IdResultType" "x")
+                 (t
+                  ("IdResultType" "x"))
                  "OpIsNormal"
-                 ("IdResultType" "x")
+                 (t
+                  ("IdResultType" "x"))
                  "OpSignBitSet"
-                 ("IdResultType" "x")
+                 (t
+                  ("IdResultType" "x"))
                  "OpLessOrGreater"
-                 ("IdResultType" "x" "y")
+                 (t
+                  ("IdResultType" "x" "y"))
                  "OpOrdered"
-                 ("IdResultType" "x" "y")
+                 (t
+                  ("IdResultType" "x" "y"))
                  "OpUnordered"
-                 ("IdResultType" "x" "y")
+                 (t
+                  ("IdResultType" "x" "y"))
                  "OpLogicalEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpLogicalNotEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpLogicalOr"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpLogicalAnd"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpLogicalNot"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpSelect"
-                 ("IdResultType" "Condition" "Object 1" "Object 2")
+                 (t
+                  ("IdResultType" "Condition" "Object 1" "Object 2"))
                  "OpIEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpINotEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUGreaterThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSGreaterThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUGreaterThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSGreaterThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpULessThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSLessThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpULessThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpSLessThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFOrdEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFUnordEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFOrdNotEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFUnordNotEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFOrdLessThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFUnordLessThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFOrdGreaterThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFUnordGreaterThan"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFOrdLessThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFUnordLessThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFOrdGreaterThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFUnordGreaterThanEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpShiftRightLogical"
-                 ("IdResultType" "Base" "Shift")
+                 (t
+                  ("IdResultType" "Base" "Shift"))
                  "OpShiftRightArithmetic"
-                 ("IdResultType" "Base" "Shift")
+                 (t
+                  ("IdResultType" "Base" "Shift"))
                  "OpShiftLeftLogical"
-                 ("IdResultType" "Base" "Shift")
+                 (t
+                  ("IdResultType" "Base" "Shift"))
                  "OpBitwiseOr"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpBitwiseXor"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpBitwiseAnd"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpNot"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpBitFieldInsert"
-                 ("IdResultType" "Base" "Insert" "Offset" "Count")
+                 (t
+                  ("IdResultType" "Base" "Insert" "Offset" "Count"))
                  "OpBitFieldSExtract"
-                 ("IdResultType" "Base" "Offset" "Count")
+                 (t
+                  ("IdResultType" "Base" "Offset" "Count"))
                  "OpBitFieldUExtract"
-                 ("IdResultType" "Base" "Offset" "Count")
+                 (t
+                  ("IdResultType" "Base" "Offset" "Count"))
                  "OpBitReverse"
-                 ("IdResultType" "Base")
+                 (t
+                  ("IdResultType" "Base"))
                  "OpBitCount"
-                 ("IdResultType" "Base")
+                 (t
+                  ("IdResultType" "Base"))
                  "OpDPdx"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpDPdy"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpFwidth"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpDPdxFine"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpDPdyFine"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpFwidthFine"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpDPdxCoarse"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpDPdyCoarse"
-                 ("IdResultType" "P")
+                 (t
+                  ("IdResultType" "P"))
                  "OpFwidthCoarse"
-                 ("IdResultType" "P")
-                 "OpEmitVertex" nil "OpEndPrimitive" nil "OpEmitStreamVertex"
-                 ("Stream")
+                 (t
+                  ("IdResultType" "P"))
+                 "OpEmitVertex"
+                 (nil nil)
+                 "OpEndPrimitive"
+                 (nil nil)
+                 "OpEmitStreamVertex"
+                 (nil
+                  ("Stream"))
                  "OpEndStreamPrimitive"
-                 ("Stream")
+                 (nil
+                  ("Stream"))
                  "OpControlBarrier"
-                 ("Execution" "Memory" "Semantics")
+                 (nil
+                  ("Execution" "Memory" "Semantics"))
                  "OpMemoryBarrier"
-                 ("Memory" "Semantics")
+                 (nil
+                  ("Memory" "Semantics"))
                  "OpAtomicLoad"
-                 ("IdResultType" "Pointer" "Memory" "Semantics")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics"))
                  "OpAtomicStore"
-                 ("Pointer" "Memory" "Semantics" "Value")
+                 (nil
+                  ("Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicExchange"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicCompareExchange"
-                 ("IdResultType" "Pointer" "Memory" "Equal" "Unequal" "Value" "Comparator")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Equal" "Unequal" "Value" "Comparator"))
                  "OpAtomicCompareExchangeWeak"
-                 ("IdResultType" "Pointer" "Memory" "Equal" "Unequal" "Value" "Comparator")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Equal" "Unequal" "Value" "Comparator"))
                  "OpAtomicIIncrement"
-                 ("IdResultType" "Pointer" "Memory" "Semantics")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics"))
                  "OpAtomicIDecrement"
-                 ("IdResultType" "Pointer" "Memory" "Semantics")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics"))
                  "OpAtomicIAdd"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicISub"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicSMin"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicUMin"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicSMax"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicUMax"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicAnd"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicOr"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpAtomicXor"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value")
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))
                  "OpPhi"
-                 ("IdResultType" "Variable, Parent, ..." "...")
+                 (t
+                  ("IdResultType" "Variable, Parent, ..." "..."))
                  "OpLoopMerge"
-                 ("Merge Block" "Continue Target" "LoopControl")
+                 (nil
+                  ("Merge Block" "Continue Target" "LoopControl"))
                  "OpSelectionMerge"
-                 ("Merge Block" "SelectionControl")
-                 "OpLabel" nil "OpBranch"
-                 ("Target Label")
+                 (nil
+                  ("Merge Block" "SelectionControl"))
+                 "OpLabel"
+                 (t nil)
+                 "OpBranch"
+                 (nil
+                  ("Target Label"))
                  "OpBranchConditional"
-                 ("Condition" "True Label" "False Label" "Branch weights" "...")
+                 (nil
+                  ("Condition" "True Label" "False Label" "Branch weights" "..."))
                  "OpSwitch"
-                 ("Selector" "Default" "Target" "...")
-                 "OpKill" nil "OpReturn" nil "OpReturnValue"
-                 ("Value")
-                 "OpUnreachable" nil "OpLifetimeStart"
-                 ("Pointer" "Size")
+                 (nil
+                  ("Selector" "Default" "Target" "..."))
+                 "OpKill"
+                 (nil nil)
+                 "OpReturn"
+                 (nil nil)
+                 "OpReturnValue"
+                 (nil
+                  ("Value"))
+                 "OpUnreachable"
+                 (nil nil)
+                 "OpLifetimeStart"
+                 (nil
+                  ("Pointer" "Size"))
                  "OpLifetimeStop"
-                 ("Pointer" "Size")
+                 (nil
+                  ("Pointer" "Size"))
                  "OpGroupAsyncCopy"
-                 ("IdResultType" "Execution" "Destination" "Source" "Num Elements" "Stride" "Event")
+                 (t
+                  ("IdResultType" "Execution" "Destination" "Source" "Num Elements" "Stride" "Event"))
                  "OpGroupWaitEvents"
-                 ("Execution" "Num Events" "Events List")
+                 (nil
+                  ("Execution" "Num Events" "Events List"))
                  "OpGroupAll"
-                 ("IdResultType" "Execution" "Predicate")
+                 (t
+                  ("IdResultType" "Execution" "Predicate"))
                  "OpGroupAny"
-                 ("IdResultType" "Execution" "Predicate")
+                 (t
+                  ("IdResultType" "Execution" "Predicate"))
                  "OpGroupBroadcast"
-                 ("IdResultType" "Execution" "Value" "LocalId")
+                 (t
+                  ("IdResultType" "Execution" "Value" "LocalId"))
                  "OpGroupIAdd"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupFAdd"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupFMin"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupUMin"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupSMin"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupFMax"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupUMax"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupSMax"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpReadPipe"
-                 ("IdResultType" "Pipe" "Pointer" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Pointer" "Packet Size" "Packet Alignment"))
                  "OpWritePipe"
-                 ("IdResultType" "Pipe" "Pointer" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Pointer" "Packet Size" "Packet Alignment"))
                  "OpReservedReadPipe"
-                 ("IdResultType" "Pipe" "Reserve Id" "Index" "Pointer" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Reserve Id" "Index" "Pointer" "Packet Size" "Packet Alignment"))
                  "OpReservedWritePipe"
-                 ("IdResultType" "Pipe" "Reserve Id" "Index" "Pointer" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Reserve Id" "Index" "Pointer" "Packet Size" "Packet Alignment"))
                  "OpReserveReadPipePackets"
-                 ("IdResultType" "Pipe" "Num Packets" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Num Packets" "Packet Size" "Packet Alignment"))
                  "OpReserveWritePipePackets"
-                 ("IdResultType" "Pipe" "Num Packets" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Num Packets" "Packet Size" "Packet Alignment"))
                  "OpCommitReadPipe"
-                 ("Pipe" "Reserve Id" "Packet Size" "Packet Alignment")
+                 (nil
+                  ("Pipe" "Reserve Id" "Packet Size" "Packet Alignment"))
                  "OpCommitWritePipe"
-                 ("Pipe" "Reserve Id" "Packet Size" "Packet Alignment")
+                 (nil
+                  ("Pipe" "Reserve Id" "Packet Size" "Packet Alignment"))
                  "OpIsValidReserveId"
-                 ("IdResultType" "Reserve Id")
+                 (t
+                  ("IdResultType" "Reserve Id"))
                  "OpGetNumPipePackets"
-                 ("IdResultType" "Pipe" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Packet Size" "Packet Alignment"))
                  "OpGetMaxPipePackets"
-                 ("IdResultType" "Pipe" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Pipe" "Packet Size" "Packet Alignment"))
                  "OpGroupReserveReadPipePackets"
-                 ("IdResultType" "Execution" "Pipe" "Num Packets" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Execution" "Pipe" "Num Packets" "Packet Size" "Packet Alignment"))
                  "OpGroupReserveWritePipePackets"
-                 ("IdResultType" "Execution" "Pipe" "Num Packets" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Execution" "Pipe" "Num Packets" "Packet Size" "Packet Alignment"))
                  "OpGroupCommitReadPipe"
-                 ("Execution" "Pipe" "Reserve Id" "Packet Size" "Packet Alignment")
+                 (nil
+                  ("Execution" "Pipe" "Reserve Id" "Packet Size" "Packet Alignment"))
                  "OpGroupCommitWritePipe"
-                 ("Execution" "Pipe" "Reserve Id" "Packet Size" "Packet Alignment")
+                 (nil
+                  ("Execution" "Pipe" "Reserve Id" "Packet Size" "Packet Alignment"))
                  "OpEnqueueMarker"
-                 ("IdResultType" "Queue" "Num Events" "Wait Events" "Ret Event")
+                 (t
+                  ("IdResultType" "Queue" "Num Events" "Wait Events" "Ret Event"))
                  "OpEnqueueKernel"
-                 ("IdResultType" "Queue" "Flags" "ND Range" "Num Events" "Wait Events" "Ret Event" "Invoke" "Param" "Param Size" "Param Align" "Local Size" "...")
+                 (t
+                  ("IdResultType" "Queue" "Flags" "ND Range" "Num Events" "Wait Events" "Ret Event" "Invoke" "Param" "Param Size" "Param Align" "Local Size" "..."))
                  "OpGetKernelNDrangeSubGroupCount"
-                 ("IdResultType" "ND Range" "Invoke" "Param" "Param Size" "Param Align")
+                 (t
+                  ("IdResultType" "ND Range" "Invoke" "Param" "Param Size" "Param Align"))
                  "OpGetKernelNDrangeMaxSubGroupSize"
-                 ("IdResultType" "ND Range" "Invoke" "Param" "Param Size" "Param Align")
+                 (t
+                  ("IdResultType" "ND Range" "Invoke" "Param" "Param Size" "Param Align"))
                  "OpGetKernelWorkGroupSize"
-                 ("IdResultType" "Invoke" "Param" "Param Size" "Param Align")
+                 (t
+                  ("IdResultType" "Invoke" "Param" "Param Size" "Param Align"))
                  "OpGetKernelPreferredWorkGroupSizeMultiple"
-                 ("IdResultType" "Invoke" "Param" "Param Size" "Param Align")
+                 (t
+                  ("IdResultType" "Invoke" "Param" "Param Size" "Param Align"))
                  "OpRetainEvent"
-                 ("Event")
+                 (nil
+                  ("Event"))
                  "OpReleaseEvent"
-                 ("Event")
+                 (nil
+                  ("Event"))
                  "OpCreateUserEvent"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpIsValidEvent"
-                 ("IdResultType" "Event")
+                 (t
+                  ("IdResultType" "Event"))
                  "OpSetUserEventStatus"
-                 ("Event" "Status")
+                 (nil
+                  ("Event" "Status"))
                  "OpCaptureEventProfilingInfo"
-                 ("Event" "Profiling Info" "Value")
+                 (nil
+                  ("Event" "Profiling Info" "Value"))
                  "OpGetDefaultQueue"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpBuildNDRange"
-                 ("IdResultType" "GlobalWorkSize" "LocalWorkSize" "GlobalWorkOffset")
+                 (t
+                  ("IdResultType" "GlobalWorkSize" "LocalWorkSize" "GlobalWorkOffset"))
                  "OpImageSparseSampleImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSparseSampleExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSparseSampleDrefImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSparseSampleDrefExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSparseSampleProjImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSparseSampleProjExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "ImageOperands"))
                  "OpImageSparseSampleProjDrefImplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSparseSampleProjDrefExplicitLod"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSparseFetch"
-                 ("IdResultType" "Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
                  "OpImageSparseGather"
-                 ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "Component" "ImageOperands"))
                  "OpImageSparseDrefGather"
-                 ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "D~ref~" "ImageOperands"))
                  "OpImageSparseTexelsResident"
-                 ("IdResultType" "Resident Code")
-                 "OpNoLine" nil "OpAtomicFlagTestAndSet"
-                 ("IdResultType" "Pointer" "Memory" "Semantics")
+                 (t
+                  ("IdResultType" "Resident Code"))
+                 "OpNoLine"
+                 (nil nil)
+                 "OpAtomicFlagTestAndSet"
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics"))
                  "OpAtomicFlagClear"
-                 ("Pointer" "Memory" "Semantics")
+                 (nil
+                  ("Pointer" "Memory" "Semantics"))
                  "OpImageSparseRead"
-                 ("IdResultType" "Image" "Coordinate" "ImageOperands")
+                 (t
+                  ("IdResultType" "Image" "Coordinate" "ImageOperands"))
                  "OpSizeOf"
-                 ("IdResultType" "Pointer")
-                 "OpTypePipeStorage" nil "OpConstantPipeStorage"
-                 ("IdResultType" "Packet Size" "Packet Alignment" "Capacity")
+                 (t
+                  ("IdResultType" "Pointer"))
+                 "OpTypePipeStorage"
+                 (t nil)
+                 "OpConstantPipeStorage"
+                 (t
+                  ("IdResultType" "Packet Size" "Packet Alignment" "Capacity"))
                  "OpCreatePipeFromPipeStorage"
-                 ("IdResultType" "Pipe Storage")
+                 (t
+                  ("IdResultType" "Pipe Storage"))
                  "OpGetKernelLocalSizeForSubgroupCount"
-                 ("IdResultType" "Subgroup Count" "Invoke" "Param" "Param Size" "Param Align")
+                 (t
+                  ("IdResultType" "Subgroup Count" "Invoke" "Param" "Param Size" "Param Align"))
                  "OpGetKernelMaxNumSubgroups"
-                 ("IdResultType" "Invoke" "Param" "Param Size" "Param Align")
-                 "OpTypeNamedBarrier" nil "OpNamedBarrierInitialize"
-                 ("IdResultType" "Subgroup Count")
+                 (t
+                  ("IdResultType" "Invoke" "Param" "Param Size" "Param Align"))
+                 "OpTypeNamedBarrier"
+                 (t nil)
+                 "OpNamedBarrierInitialize"
+                 (t
+                  ("IdResultType" "Subgroup Count"))
                  "OpMemoryNamedBarrier"
-                 ("Named Barrier" "Memory" "Semantics")
+                 (nil
+                  ("Named Barrier" "Memory" "Semantics"))
                  "OpModuleProcessed"
-                 ("Process")
+                 (nil
+                  ("Process"))
                  "OpExecutionModeId"
-                 ("Entry Point" "Mode")
+                 (nil
+                  ("Entry Point" "Mode"))
                  "OpDecorateId"
-                 ("Target" "Decoration")
+                 (nil
+                  ("Target" "Decoration"))
                  "OpGroupNonUniformElect"
-                 ("IdResultType" "Execution")
+                 (t
+                  ("IdResultType" "Execution"))
                  "OpGroupNonUniformAll"
-                 ("IdResultType" "Execution" "Predicate")
+                 (t
+                  ("IdResultType" "Execution" "Predicate"))
                  "OpGroupNonUniformAny"
-                 ("IdResultType" "Execution" "Predicate")
+                 (t
+                  ("IdResultType" "Execution" "Predicate"))
                  "OpGroupNonUniformAllEqual"
-                 ("IdResultType" "Execution" "Value")
+                 (t
+                  ("IdResultType" "Execution" "Value"))
                  "OpGroupNonUniformBroadcast"
-                 ("IdResultType" "Execution" "Value" "Id")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Id"))
                  "OpGroupNonUniformBroadcastFirst"
-                 ("IdResultType" "Execution" "Value")
+                 (t
+                  ("IdResultType" "Execution" "Value"))
                  "OpGroupNonUniformBallot"
-                 ("IdResultType" "Execution" "Predicate")
+                 (t
+                  ("IdResultType" "Execution" "Predicate"))
                  "OpGroupNonUniformInverseBallot"
-                 ("IdResultType" "Execution" "Value")
+                 (t
+                  ("IdResultType" "Execution" "Value"))
                  "OpGroupNonUniformBallotBitExtract"
-                 ("IdResultType" "Execution" "Value" "Index")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Index"))
                  "OpGroupNonUniformBallotBitCount"
-                 ("IdResultType" "Execution" "Operation" "Value")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value"))
                  "OpGroupNonUniformBallotFindLSB"
-                 ("IdResultType" "Execution" "Value")
+                 (t
+                  ("IdResultType" "Execution" "Value"))
                  "OpGroupNonUniformBallotFindMSB"
-                 ("IdResultType" "Execution" "Value")
+                 (t
+                  ("IdResultType" "Execution" "Value"))
                  "OpGroupNonUniformShuffle"
-                 ("IdResultType" "Execution" "Value" "Id")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Id"))
                  "OpGroupNonUniformShuffleXor"
-                 ("IdResultType" "Execution" "Value" "Mask")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Mask"))
                  "OpGroupNonUniformShuffleUp"
-                 ("IdResultType" "Execution" "Value" "Delta")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Delta"))
                  "OpGroupNonUniformShuffleDown"
-                 ("IdResultType" "Execution" "Value" "Delta")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Delta"))
                  "OpGroupNonUniformIAdd"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformFAdd"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformIMul"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformFMul"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformSMin"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformUMin"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformFMin"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformSMax"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformUMax"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformFMax"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformBitwiseAnd"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformBitwiseOr"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformBitwiseXor"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformLogicalAnd"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformLogicalOr"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformLogicalXor"
-                 ("IdResultType" "Execution" "Operation" "Value" "ClusterSize")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "Value" "ClusterSize"))
                  "OpGroupNonUniformQuadBroadcast"
-                 ("IdResultType" "Execution" "Value" "Index")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Index"))
                  "OpGroupNonUniformQuadSwap"
-                 ("IdResultType" "Execution" "Value" "Direction")
+                 (t
+                  ("IdResultType" "Execution" "Value" "Direction"))
                  "OpCopyLogical"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpPtrEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpPtrNotEqual"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpPtrDiff"
-                 ("IdResultType" "Operand 1" "Operand 2")
-                 "OpTerminateInvocation" nil "OpSubgroupBallotKHR"
-                 ("IdResultType" "Predicate")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
+                 "OpTerminateInvocation"
+                 (nil nil)
+                 "OpSubgroupBallotKHR"
+                 (t
+                  ("IdResultType" "Predicate"))
                  "OpSubgroupFirstInvocationKHR"
-                 ("IdResultType" "Value")
+                 (t
+                  ("IdResultType" "Value"))
                  "OpSubgroupAllKHR"
-                 ("IdResultType" "Predicate")
+                 (t
+                  ("IdResultType" "Predicate"))
                  "OpSubgroupAnyKHR"
-                 ("IdResultType" "Predicate")
+                 (t
+                  ("IdResultType" "Predicate"))
                  "OpSubgroupAllEqualKHR"
-                 ("IdResultType" "Predicate")
+                 (t
+                  ("IdResultType" "Predicate"))
                  "OpSubgroupReadInvocationKHR"
-                 ("IdResultType" "Value" "Index")
+                 (t
+                  ("IdResultType" "Value" "Index"))
                  "OpTraceRayKHR"
-                 ("Accel" "Ray Flags" "Cull Mask" "SBT Offset" "SBT Stride" "Miss Index" "Ray Origin" "Ray Tmin" "Ray Direction" "Ray Tmax" "Payload")
+                 (nil
+                  ("Accel" "Ray Flags" "Cull Mask" "SBT Offset" "SBT Stride" "Miss Index" "Ray Origin" "Ray Tmin" "Ray Direction" "Ray Tmax" "Payload"))
                  "OpExecuteCallableKHR"
-                 ("SBT Index" "Callable Data")
+                 (nil
+                  ("SBT Index" "Callable Data"))
                  "OpConvertUToAccelerationStructureKHR"
-                 ("IdResultType" "Accel")
-                 "OpIgnoreIntersectionKHR" nil "OpTerminateRayKHR" nil "OpTypeRayQueryKHR" nil "OpRayQueryInitializeKHR"
-                 ("RayQuery" "Accel" "RayFlags" "CullMask" "RayOrigin" "RayTMin" "RayDirection" "RayTMax")
+                 (t
+                  ("IdResultType" "Accel"))
+                 "OpIgnoreIntersectionKHR"
+                 (nil nil)
+                 "OpTerminateRayKHR"
+                 (nil nil)
+                 "OpTypeRayQueryKHR"
+                 (t nil)
+                 "OpRayQueryInitializeKHR"
+                 (nil
+                  ("RayQuery" "Accel" "RayFlags" "CullMask" "RayOrigin" "RayTMin" "RayDirection" "RayTMax"))
                  "OpRayQueryTerminateKHR"
-                 ("RayQuery")
+                 (nil
+                  ("RayQuery"))
                  "OpRayQueryGenerateIntersectionKHR"
-                 ("RayQuery" "HitT")
+                 (nil
+                  ("RayQuery" "HitT"))
                  "OpRayQueryConfirmIntersectionKHR"
-                 ("RayQuery")
+                 (nil
+                  ("RayQuery"))
                  "OpRayQueryProceedKHR"
-                 ("IdResultType" "RayQuery")
+                 (t
+                  ("IdResultType" "RayQuery"))
                  "OpRayQueryGetIntersectionTypeKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpGroupIAddNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupFAddNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupFMinNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupUMinNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupSMinNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupFMaxNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupUMaxNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpGroupSMaxNonUniformAMD"
-                 ("IdResultType" "Execution" "Operation" "X")
+                 (t
+                  ("IdResultType" "Execution" "Operation" "X"))
                  "OpFragmentMaskFetchAMD"
-                 ("IdResultType" "Image" "Coordinate")
+                 (t
+                  ("IdResultType" "Image" "Coordinate"))
                  "OpFragmentFetchAMD"
-                 ("IdResultType" "Image" "Coordinate" "Fragment Index")
+                 (t
+                  ("IdResultType" "Image" "Coordinate" "Fragment Index"))
                  "OpReadClockKHR"
-                 ("IdResultType" "Execution")
+                 (t
+                  ("IdResultType" "Execution"))
                  "OpImageSampleFootprintNV"
-                 ("IdResultType" "Sampled Image" "Coordinate" "Granularity" "Coarse" "ImageOperands")
+                 (t
+                  ("IdResultType" "Sampled Image" "Coordinate" "Granularity" "Coarse" "ImageOperands"))
                  "OpGroupNonUniformPartitionNV"
-                 ("IdResultType" "Value")
+                 (t
+                  ("IdResultType" "Value"))
                  "OpWritePackedPrimitiveIndices4x8NV"
-                 ("Index Offset" "Packed Indices")
+                 (nil
+                  ("Index Offset" "Packed Indices"))
                  "OpReportIntersectionNV"
-                 ("IdResultType" "Hit" "HitKind")
+                 (t
+                  ("IdResultType" "Hit" "HitKind"))
                  "OpReportIntersectionKHR"
-                 ("IdResultType" "Hit" "HitKind")
-                 "OpIgnoreIntersectionNV" nil "OpTerminateRayNV" nil "OpTraceNV"
-                 ("Accel" "Ray Flags" "Cull Mask" "SBT Offset" "SBT Stride" "Miss Index" "Ray Origin" "Ray Tmin" "Ray Direction" "Ray Tmax" "PayloadId")
-                 "OpTypeAccelerationStructureNV" nil "OpTypeAccelerationStructureKHR" nil "OpExecuteCallableNV"
-                 ("SBT Index" "Callable DataId")
+                 (t
+                  ("IdResultType" "Hit" "HitKind"))
+                 "OpIgnoreIntersectionNV"
+                 (nil nil)
+                 "OpTerminateRayNV"
+                 (nil nil)
+                 "OpTraceNV"
+                 (nil
+                  ("Accel" "Ray Flags" "Cull Mask" "SBT Offset" "SBT Stride" "Miss Index" "Ray Origin" "Ray Tmin" "Ray Direction" "Ray Tmax" "PayloadId"))
+                 "OpTypeAccelerationStructureNV"
+                 (t nil)
+                 "OpTypeAccelerationStructureKHR"
+                 (t nil)
+                 "OpExecuteCallableNV"
+                 (nil
+                  ("SBT Index" "Callable DataId"))
                  "OpTypeCooperativeMatrixNV"
-                 ("Component Type" "Execution" "Rows" "Columns")
+                 (t
+                  ("Component Type" "Execution" "Rows" "Columns"))
                  "OpCooperativeMatrixLoadNV"
-                 ("IdResultType" "Pointer" "Stride" "Column Major" "MemoryAccess")
+                 (t
+                  ("IdResultType" "Pointer" "Stride" "Column Major" "MemoryAccess"))
                  "OpCooperativeMatrixStoreNV"
-                 ("Pointer" "Object" "Stride" "Column Major" "MemoryAccess")
+                 (nil
+                  ("Pointer" "Object" "Stride" "Column Major" "MemoryAccess"))
                  "OpCooperativeMatrixMulAddNV"
-                 ("IdResultType" "A" "B" "C")
+                 (t
+                  ("IdResultType" "A" "B" "C"))
                  "OpCooperativeMatrixLengthNV"
-                 ("IdResultType" "Type")
-                 "OpBeginInvocationInterlockEXT" nil "OpEndInvocationInterlockEXT" nil "OpDemoteToHelperInvocationEXT" nil "OpIsHelperInvocationEXT"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType" "Type"))
+                 "OpBeginInvocationInterlockEXT"
+                 (nil nil)
+                 "OpEndInvocationInterlockEXT"
+                 (nil nil)
+                 "OpDemoteToHelperInvocationEXT"
+                 (nil nil)
+                 "OpIsHelperInvocationEXT"
+                 (t
+                  ("IdResultType"))
                  "OpSubgroupShuffleINTEL"
-                 ("IdResultType" "Data" "InvocationId")
+                 (t
+                  ("IdResultType" "Data" "InvocationId"))
                  "OpSubgroupShuffleDownINTEL"
-                 ("IdResultType" "Current" "Next" "Delta")
+                 (t
+                  ("IdResultType" "Current" "Next" "Delta"))
                  "OpSubgroupShuffleUpINTEL"
-                 ("IdResultType" "Previous" "Current" "Delta")
+                 (t
+                  ("IdResultType" "Previous" "Current" "Delta"))
                  "OpSubgroupShuffleXorINTEL"
-                 ("IdResultType" "Data" "Value")
+                 (t
+                  ("IdResultType" "Data" "Value"))
                  "OpSubgroupBlockReadINTEL"
-                 ("IdResultType" "Ptr")
+                 (t
+                  ("IdResultType" "Ptr"))
                  "OpSubgroupBlockWriteINTEL"
-                 ("Ptr" "Data")
+                 (nil
+                  ("Ptr" "Data"))
                  "OpSubgroupImageBlockReadINTEL"
-                 ("IdResultType" "Image" "Coordinate")
+                 (t
+                  ("IdResultType" "Image" "Coordinate"))
                  "OpSubgroupImageBlockWriteINTEL"
-                 ("Image" "Coordinate" "Data")
+                 (nil
+                  ("Image" "Coordinate" "Data"))
                  "OpSubgroupImageMediaBlockReadINTEL"
-                 ("IdResultType" "Image" "Coordinate" "Width" "Height")
+                 (t
+                  ("IdResultType" "Image" "Coordinate" "Width" "Height"))
                  "OpSubgroupImageMediaBlockWriteINTEL"
-                 ("Image" "Coordinate" "Width" "Height" "Data")
+                 (nil
+                  ("Image" "Coordinate" "Width" "Height" "Data"))
                  "OpUCountLeadingZerosINTEL"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpUCountTrailingZerosINTEL"
-                 ("IdResultType" "Operand")
+                 (t
+                  ("IdResultType" "Operand"))
                  "OpAbsISubINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpAbsUSubINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpIAddSatINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUAddSatINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpIAverageINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUAverageINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpIAverageRoundedINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUAverageRoundedINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpISubSatINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUSubSatINTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpIMul32x16INTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpUMul32x16INTEL"
-                 ("IdResultType" "Operand 1" "Operand 2")
+                 (t
+                  ("IdResultType" "Operand 1" "Operand 2"))
                  "OpFunctionPointerINTEL"
-                 ("IdResultType" "Function")
+                 (t
+                  ("IdResultType" "Function"))
                  "OpFunctionPointerCallINTEL"
-                 ("IdResultType" "Operand 1" "...")
+                 (t
+                  ("IdResultType" "Operand 1" "..."))
                  "OpDecorateString"
-                 ("Target" "Decoration")
+                 (nil
+                  ("Target" "Decoration"))
                  "OpDecorateStringGOOGLE"
-                 ("Target" "Decoration")
+                 (nil
+                  ("Target" "Decoration"))
                  "OpMemberDecorateString"
-                 ("Struct Type" "Member" "Decoration")
+                 (nil
+                  ("Struct Type" "Member" "Decoration"))
                  "OpMemberDecorateStringGOOGLE"
-                 ("Struct Type" "Member" "Decoration")
+                 (nil
+                  ("Struct Type" "Member" "Decoration"))
                  "OpVmeImageINTEL"
-                 ("IdResultType" "Image Type" "Sampler")
+                 (t
+                  ("IdResultType" "Image Type" "Sampler"))
                  "OpTypeVmeImageINTEL"
-                 ("Image Type")
-                 "OpTypeAvcImePayloadINTEL" nil "OpTypeAvcRefPayloadINTEL" nil "OpTypeAvcSicPayloadINTEL" nil "OpTypeAvcMcePayloadINTEL" nil "OpTypeAvcMceResultINTEL" nil "OpTypeAvcImeResultINTEL" nil "OpTypeAvcImeResultSingleReferenceStreamoutINTEL" nil "OpTypeAvcImeResultDualReferenceStreamoutINTEL" nil "OpTypeAvcImeSingleReferenceStreaminINTEL" nil "OpTypeAvcImeDualReferenceStreaminINTEL" nil "OpTypeAvcRefResultINTEL" nil "OpTypeAvcSicResultINTEL" nil "OpSubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL"
-                 ("IdResultType" "Slice Type" "Qp")
+                 (t
+                  ("Image Type"))
+                 "OpTypeAvcImePayloadINTEL"
+                 (t nil)
+                 "OpTypeAvcRefPayloadINTEL"
+                 (t nil)
+                 "OpTypeAvcSicPayloadINTEL"
+                 (t nil)
+                 "OpTypeAvcMcePayloadINTEL"
+                 (t nil)
+                 "OpTypeAvcMceResultINTEL"
+                 (t nil)
+                 "OpTypeAvcImeResultINTEL"
+                 (t nil)
+                 "OpTypeAvcImeResultSingleReferenceStreamoutINTEL"
+                 (t nil)
+                 "OpTypeAvcImeResultDualReferenceStreamoutINTEL"
+                 (t nil)
+                 "OpTypeAvcImeSingleReferenceStreaminINTEL"
+                 (t nil)
+                 "OpTypeAvcImeDualReferenceStreaminINTEL"
+                 (t nil)
+                 "OpTypeAvcRefResultINTEL"
+                 (t nil)
+                 "OpTypeAvcSicResultINTEL"
+                 (t nil)
+                 "OpSubgroupAvcMceGetDefaultInterBaseMultiReferencePenaltyINTEL"
+                 (t
+                  ("IdResultType" "Slice Type" "Qp"))
                  "OpSubgroupAvcMceSetInterBaseMultiReferencePenaltyINTEL"
-                 ("IdResultType" "Reference Base Penalty" "Payload")
+                 (t
+                  ("IdResultType" "Reference Base Penalty" "Payload"))
                  "OpSubgroupAvcMceGetDefaultInterShapePenaltyINTEL"
-                 ("IdResultType" "Slice Type" "Qp")
+                 (t
+                  ("IdResultType" "Slice Type" "Qp"))
                  "OpSubgroupAvcMceSetInterShapePenaltyINTEL"
-                 ("IdResultType" "Packed Shape Penalty" "Payload")
+                 (t
+                  ("IdResultType" "Packed Shape Penalty" "Payload"))
                  "OpSubgroupAvcMceGetDefaultInterDirectionPenaltyINTEL"
-                 ("IdResultType" "Slice Type" "Qp")
+                 (t
+                  ("IdResultType" "Slice Type" "Qp"))
                  "OpSubgroupAvcMceSetInterDirectionPenaltyINTEL"
-                 ("IdResultType" "Direction Cost" "Payload")
+                 (t
+                  ("IdResultType" "Direction Cost" "Payload"))
                  "OpSubgroupAvcMceGetDefaultIntraLumaShapePenaltyINTEL"
-                 ("IdResultType" "Slice Type" "Qp")
+                 (t
+                  ("IdResultType" "Slice Type" "Qp"))
                  "OpSubgroupAvcMceGetDefaultInterMotionVectorCostTableINTEL"
-                 ("IdResultType" "Slice Type" "Qp")
+                 (t
+                  ("IdResultType" "Slice Type" "Qp"))
                  "OpSubgroupAvcMceGetDefaultHighPenaltyCostTableINTEL"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSubgroupAvcMceGetDefaultMediumPenaltyCostTableINTEL"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSubgroupAvcMceGetDefaultLowPenaltyCostTableINTEL"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSubgroupAvcMceSetMotionVectorCostFunctionINTEL"
-                 ("IdResultType" "Packed Cost Center Delta" "Packed Cost Table" "Cost Precision" "Payload")
+                 (t
+                  ("IdResultType" "Packed Cost Center Delta" "Packed Cost Table" "Cost Precision" "Payload"))
                  "OpSubgroupAvcMceGetDefaultIntraLumaModePenaltyINTEL"
-                 ("IdResultType" "Slice Type" "Qp")
+                 (t
+                  ("IdResultType" "Slice Type" "Qp"))
                  "OpSubgroupAvcMceGetDefaultNonDcLumaIntraPenaltyINTEL"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSubgroupAvcMceGetDefaultIntraChromaModeBasePenaltyINTEL"
-                 ("IdResultType")
+                 (t
+                  ("IdResultType"))
                  "OpSubgroupAvcMceSetAcOnlyHaarINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceSetSourceInterlacedFieldPolarityINTEL"
-                 ("IdResultType" "Source Field Polarity" "Payload")
+                 (t
+                  ("IdResultType" "Source Field Polarity" "Payload"))
                  "OpSubgroupAvcMceSetSingleReferenceInterlacedFieldPolarityINTEL"
-                 ("IdResultType" "Reference Field Polarity" "Payload")
+                 (t
+                  ("IdResultType" "Reference Field Polarity" "Payload"))
                  "OpSubgroupAvcMceSetDualReferenceInterlacedFieldPolaritiesINTEL"
-                 ("IdResultType" "Forward Reference Field Polarity" "Backward Reference Field Polarity" "Payload")
+                 (t
+                  ("IdResultType" "Forward Reference Field Polarity" "Backward Reference Field Polarity" "Payload"))
                  "OpSubgroupAvcMceConvertToImePayloadINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceConvertToImeResultINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceConvertToRefPayloadINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceConvertToRefResultINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceConvertToSicPayloadINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceConvertToSicResultINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetMotionVectorsINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetInterDistortionsINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetBestInterDistortionsINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetInterMajorShapeINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetInterMinorShapeINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetInterDirectionsINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetInterMotionVectorCountINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetInterReferenceIdsINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcMceGetInterReferenceInterlacedFieldPolaritiesINTEL"
-                 ("IdResultType" "Packed Reference Ids" "Packed Reference Parameter Field Polarities" "Payload")
+                 (t
+                  ("IdResultType" "Packed Reference Ids" "Packed Reference Parameter Field Polarities" "Payload"))
                  "OpSubgroupAvcImeInitializeINTEL"
-                 ("IdResultType" "Src Coord" "Partition Mask" "SAD Adjustment")
+                 (t
+                  ("IdResultType" "Src Coord" "Partition Mask" "SAD Adjustment"))
                  "OpSubgroupAvcImeSetSingleReferenceINTEL"
-                 ("IdResultType" "Ref Offset" "Search Window Config" "Payload")
+                 (t
+                  ("IdResultType" "Ref Offset" "Search Window Config" "Payload"))
                  "OpSubgroupAvcImeSetDualReferenceINTEL"
-                 ("IdResultType" "Fwd Ref Offset" "Bwd Ref Offset" "id> Search Window Config" "Payload")
+                 (t
+                  ("IdResultType" "Fwd Ref Offset" "Bwd Ref Offset" "id> Search Window Config" "Payload"))
                  "OpSubgroupAvcImeRefWindowSizeINTEL"
-                 ("IdResultType" "Search Window Config" "Dual Ref")
+                 (t
+                  ("IdResultType" "Search Window Config" "Dual Ref"))
                  "OpSubgroupAvcImeAdjustRefOffsetINTEL"
-                 ("IdResultType" "Ref Offset" "Src Coord" "Ref Window Size" "Image Size")
+                 (t
+                  ("IdResultType" "Ref Offset" "Src Coord" "Ref Window Size" "Image Size"))
                  "OpSubgroupAvcImeConvertToMcePayloadINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeSetMaxMotionVectorCountINTEL"
-                 ("IdResultType" "Max Motion Vector Count" "Payload")
+                 (t
+                  ("IdResultType" "Max Motion Vector Count" "Payload"))
                  "OpSubgroupAvcImeSetUnidirectionalMixDisableINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeSetEarlySearchTerminationThresholdINTEL"
-                 ("IdResultType" "Threshold" "Payload")
+                 (t
+                  ("IdResultType" "Threshold" "Payload"))
                  "OpSubgroupAvcImeSetWeightedSadINTEL"
-                 ("IdResultType" "Packed Sad Weights" "Payload")
+                 (t
+                  ("IdResultType" "Packed Sad Weights" "Payload"))
                  "OpSubgroupAvcImeEvaluateWithSingleReferenceINTEL"
-                 ("IdResultType" "Src Image" "Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Ref Image" "Payload"))
                  "OpSubgroupAvcImeEvaluateWithDualReferenceINTEL"
-                 ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload"))
                  "OpSubgroupAvcImeEvaluateWithSingleReferenceStreaminINTEL"
-                 ("IdResultType" "Src Image" "Ref Image" "Payload" "Streamin Components")
+                 (t
+                  ("IdResultType" "Src Image" "Ref Image" "Payload" "Streamin Components"))
                  "OpSubgroupAvcImeEvaluateWithDualReferenceStreaminINTEL"
-                 ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload" "Streamin Components")
+                 (t
+                  ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload" "Streamin Components"))
                  "OpSubgroupAvcImeEvaluateWithSingleReferenceStreamoutINTEL"
-                 ("IdResultType" "Src Image" "Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Ref Image" "Payload"))
                  "OpSubgroupAvcImeEvaluateWithDualReferenceStreamoutINTEL"
-                 ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload"))
                  "OpSubgroupAvcImeEvaluateWithSingleReferenceStreaminoutINTEL"
-                 ("IdResultType" "Src Image" "Ref Image" "Payload" "Streamin Components")
+                 (t
+                  ("IdResultType" "Src Image" "Ref Image" "Payload" "Streamin Components"))
                  "OpSubgroupAvcImeEvaluateWithDualReferenceStreaminoutINTEL"
-                 ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload" "Streamin Components")
+                 (t
+                  ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload" "Streamin Components"))
                  "OpSubgroupAvcImeConvertToMceResultINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeGetSingleReferenceStreaminINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeGetDualReferenceStreaminINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeStripSingleReferenceStreamoutINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeStripDualReferenceStreamoutINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeMotionVectorsINTEL"
-                 ("IdResultType" "Payload" "Major Shape")
+                 (t
+                  ("IdResultType" "Payload" "Major Shape"))
                  "OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeDistortionsINTEL"
-                 ("IdResultType" "Payload" "Major Shape")
+                 (t
+                  ("IdResultType" "Payload" "Major Shape"))
                  "OpSubgroupAvcImeGetStreamoutSingleReferenceMajorShapeReferenceIdsINTEL"
-                 ("IdResultType" "Payload" "Major Shape")
+                 (t
+                  ("IdResultType" "Payload" "Major Shape"))
                  "OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeMotionVectorsINTEL"
-                 ("IdResultType" "Payload" "Major Shape" "Direction")
+                 (t
+                  ("IdResultType" "Payload" "Major Shape" "Direction"))
                  "OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeDistortionsINTEL"
-                 ("IdResultType" "Payload" "Major Shape" "Direction")
+                 (t
+                  ("IdResultType" "Payload" "Major Shape" "Direction"))
                  "OpSubgroupAvcImeGetStreamoutDualReferenceMajorShapeReferenceIdsINTEL"
-                 ("IdResultType" "Payload" "Major Shape" "Direction")
+                 (t
+                  ("IdResultType" "Payload" "Major Shape" "Direction"))
                  "OpSubgroupAvcImeGetBorderReachedINTEL"
-                 ("IdResultType" "Image Select" "Payload")
+                 (t
+                  ("IdResultType" "Image Select" "Payload"))
                  "OpSubgroupAvcImeGetTruncatedSearchIndicationINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeGetUnidirectionalEarlySearchTerminationINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeGetWeightingPatternMinimumMotionVectorINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcImeGetWeightingPatternMinimumDistortionINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcFmeInitializeINTEL"
-                 ("IdResultType" "Src Coord" "Motion Vectors" "Major Shapes" "Minor Shapes" "Direction" "Pixel Resolution" "Sad Adjustment")
+                 (t
+                  ("IdResultType" "Src Coord" "Motion Vectors" "Major Shapes" "Minor Shapes" "Direction" "Pixel Resolution" "Sad Adjustment"))
                  "OpSubgroupAvcBmeInitializeINTEL"
-                 ("IdResultType" "Src Coord" "Motion Vectors" "Major Shapes" "Minor Shapes" "Direction" "Pixel Resolution" "Bidirectional Weight" "Sad Adjustment")
+                 (t
+                  ("IdResultType" "Src Coord" "Motion Vectors" "Major Shapes" "Minor Shapes" "Direction" "Pixel Resolution" "Bidirectional Weight" "Sad Adjustment"))
                  "OpSubgroupAvcRefConvertToMcePayloadINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcRefSetBidirectionalMixDisableINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcRefSetBilinearFilterEnableINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcRefEvaluateWithSingleReferenceINTEL"
-                 ("IdResultType" "Src Image" "Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Ref Image" "Payload"))
                  "OpSubgroupAvcRefEvaluateWithDualReferenceINTEL"
-                 ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload"))
                  "OpSubgroupAvcRefEvaluateWithMultiReferenceINTEL"
-                 ("IdResultType" "Src Image" "Packed Reference Ids" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Packed Reference Ids" "Payload"))
                  "OpSubgroupAvcRefEvaluateWithMultiReferenceInterlacedINTEL"
-                 ("IdResultType" "Src Image" "Packed Reference Ids" "Packed Reference Field Polarities" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Packed Reference Ids" "Packed Reference Field Polarities" "Payload"))
                  "OpSubgroupAvcRefConvertToMceResultINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicInitializeINTEL"
-                 ("IdResultType" "Src Coord")
+                 (t
+                  ("IdResultType" "Src Coord"))
                  "OpSubgroupAvcSicConfigureSkcINTEL"
-                 ("IdResultType" "Skip Block Partition Type" "Skip Motion Vector Mask" "Motion Vectors" "Bidirectional Weight" "Sad Adjustment" "Payload")
+                 (t
+                  ("IdResultType" "Skip Block Partition Type" "Skip Motion Vector Mask" "Motion Vectors" "Bidirectional Weight" "Sad Adjustment" "Payload"))
                  "OpSubgroupAvcSicConfigureIpeLumaINTEL"
-                 ("IdResultType" "Luma Intra Partition Mask" "Intra Neighbour Availabilty" "Left Edge Luma Pixels" "Upper Left Corner Luma Pixel" "Upper Edge Luma Pixels" "Upper Right Edge Luma Pixels" "Sad Adjustment" "Payload")
+                 (t
+                  ("IdResultType" "Luma Intra Partition Mask" "Intra Neighbour Availabilty" "Left Edge Luma Pixels" "Upper Left Corner Luma Pixel" "Upper Edge Luma Pixels" "Upper Right Edge Luma Pixels" "Sad Adjustment" "Payload"))
                  "OpSubgroupAvcSicConfigureIpeLumaChromaINTEL"
-                 ("IdResultType" "Luma Intra Partition Mask" "Intra Neighbour Availabilty" "Left Edge Luma Pixels" "Upper Left Corner Luma Pixel" "Upper Edge Luma Pixels" "Upper Right Edge Luma Pixels" "Left Edge Chroma Pixels" "Upper Left Corner Chroma Pixel" "Upper Edge Chroma Pixels" "Sad Adjustment" "Payload")
+                 (t
+                  ("IdResultType" "Luma Intra Partition Mask" "Intra Neighbour Availabilty" "Left Edge Luma Pixels" "Upper Left Corner Luma Pixel" "Upper Edge Luma Pixels" "Upper Right Edge Luma Pixels" "Left Edge Chroma Pixels" "Upper Left Corner Chroma Pixel" "Upper Edge Chroma Pixels" "Sad Adjustment" "Payload"))
                  "OpSubgroupAvcSicGetMotionVectorMaskINTEL"
-                 ("IdResultType" "Skip Block Partition Type" "Direction")
+                 (t
+                  ("IdResultType" "Skip Block Partition Type" "Direction"))
                  "OpSubgroupAvcSicConvertToMcePayloadINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicSetIntraLumaShapePenaltyINTEL"
-                 ("IdResultType" "Packed Shape Penalty" "Payload")
+                 (t
+                  ("IdResultType" "Packed Shape Penalty" "Payload"))
                  "OpSubgroupAvcSicSetIntraLumaModeCostFunctionINTEL"
-                 ("IdResultType" "Luma Mode Penalty" "Luma Packed Neighbor Modes" "Luma Packed Non Dc Penalty" "Payload")
+                 (t
+                  ("IdResultType" "Luma Mode Penalty" "Luma Packed Neighbor Modes" "Luma Packed Non Dc Penalty" "Payload"))
                  "OpSubgroupAvcSicSetIntraChromaModeCostFunctionINTEL"
-                 ("IdResultType" "Chroma Mode Base Penalty" "Payload")
+                 (t
+                  ("IdResultType" "Chroma Mode Base Penalty" "Payload"))
                  "OpSubgroupAvcSicSetBilinearFilterEnableINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicSetSkcForwardTransformEnableINTEL"
-                 ("IdResultType" "Packed Sad Coefficients" "Payload")
+                 (t
+                  ("IdResultType" "Packed Sad Coefficients" "Payload"))
                  "OpSubgroupAvcSicSetBlockBasedRawSkipSadINTEL"
-                 ("IdResultType" "Block Based Skip Type" "Payload")
+                 (t
+                  ("IdResultType" "Block Based Skip Type" "Payload"))
                  "OpSubgroupAvcSicEvaluateIpeINTEL"
-                 ("IdResultType" "Src Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Payload"))
                  "OpSubgroupAvcSicEvaluateWithSingleReferenceINTEL"
-                 ("IdResultType" "Src Image" "Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Ref Image" "Payload"))
                  "OpSubgroupAvcSicEvaluateWithDualReferenceINTEL"
-                 ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Fwd Ref Image" "Bwd Ref Image" "Payload"))
                  "OpSubgroupAvcSicEvaluateWithMultiReferenceINTEL"
-                 ("IdResultType" "Src Image" "Packed Reference Ids" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Packed Reference Ids" "Payload"))
                  "OpSubgroupAvcSicEvaluateWithMultiReferenceInterlacedINTEL"
-                 ("IdResultType" "Src Image" "Packed Reference Ids" "Packed Reference Field Polarities" "Payload")
+                 (t
+                  ("IdResultType" "Src Image" "Packed Reference Ids" "Packed Reference Field Polarities" "Payload"))
                  "OpSubgroupAvcSicConvertToMceResultINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetIpeLumaShapeINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetBestIpeLumaDistortionINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetBestIpeChromaDistortionINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetPackedIpeLumaModesINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetIpeChromaModeINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetPackedSkcLumaCountThresholdINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetPackedSkcLumaSumThresholdINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpSubgroupAvcSicGetInterRawSadsINTEL"
-                 ("IdResultType" "Payload")
+                 (t
+                  ("IdResultType" "Payload"))
                  "OpLoopControlINTEL"
-                 ("Loop Control Parameters" "...")
+                 (nil
+                  ("Loop Control Parameters" "..."))
                  "OpReadPipeBlockingINTEL"
-                 ("IdResultType" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Packet Size" "Packet Alignment"))
                  "OpWritePipeBlockingINTEL"
-                 ("IdResultType" "Packet Size" "Packet Alignment")
+                 (t
+                  ("IdResultType" "Packet Size" "Packet Alignment"))
                  "OpFPGARegINTEL"
-                 ("IdResultType" "Result" "Input")
+                 (t
+                  ("IdResultType" "Result" "Input"))
                  "OpRayQueryGetRayTMinKHR"
-                 ("IdResultType" "RayQuery")
+                 (t
+                  ("IdResultType" "RayQuery"))
                  "OpRayQueryGetRayFlagsKHR"
-                 ("IdResultType" "RayQuery")
+                 (t
+                  ("IdResultType" "RayQuery"))
                  "OpRayQueryGetIntersectionTKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionInstanceCustomIndexKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionInstanceIdKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionInstanceShaderBindingTableRecordOffsetKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionGeometryIndexKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionPrimitiveIndexKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionBarycentricsKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionFrontFaceKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionCandidateAABBOpaqueKHR"
-                 ("IdResultType" "RayQuery")
+                 (t
+                  ("IdResultType" "RayQuery"))
                  "OpRayQueryGetIntersectionObjectRayDirectionKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionObjectRayOriginKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetWorldRayDirectionKHR"
-                 ("IdResultType" "RayQuery")
+                 (t
+                  ("IdResultType" "RayQuery"))
                  "OpRayQueryGetWorldRayOriginKHR"
-                 ("IdResultType" "RayQuery")
+                 (t
+                  ("IdResultType" "RayQuery"))
                  "OpRayQueryGetIntersectionObjectToWorldKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpRayQueryGetIntersectionWorldToObjectKHR"
-                 ("IdResultType" "RayQuery" "Intersection")
+                 (t
+                  ("IdResultType" "RayQuery" "Intersection"))
                  "OpAtomicFAddEXT"
-                 ("IdResultType" "Pointer" "Memory" "Semantics" "Value"))))
-
+                 (t
+                  ("IdResultType" "Pointer" "Memory" "Semantics" "Value")))))
 
 (provide 'spirv-mode-tables)

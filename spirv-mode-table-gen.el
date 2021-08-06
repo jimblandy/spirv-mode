@@ -25,11 +25,6 @@
 (defconst spirv-mode--instructions
   (gethash "instructions" spirv-mode--grammar))
 
-(defun spirv-mode--opcode-list (grammar)
-  "Return a list of opcode names given in `grammar'."
-  (seq-map (lambda (instruction) (gethash "opname" instruction))
-           spirv-mode--instructions))
-
 (defun spirv-mode--operand-help (op)
   "Compute a list of help strings for an operand."
 
@@ -74,13 +69,19 @@
                  it)
                arguments)))))
 
+(defun spirv-mode--insn-has-result (insn)
+  "Return true if `insn' has a ResultId operand."
+  (--any (equal (gethash "kind" it) "IdResult")
+         (gethash "operands" insn)))
+
 (defun spirv-mode--generate-operand-table ()
   (let ((table (make-hash-table :test 'equal)))
     (dolist (insn spirv-mode--instructions)
       (let* ((opname (gethash "opname" insn))
              (operands (gethash "operands" insn))
+             (has-result (spirv-mode--insn-has-result insn))
              (operand-strings (-mapcat #'spirv-mode--operand-help operands)))
-        (puthash opname operand-strings table)))
-    (insert (pp `(defconst spirv-mode--instruction-operands ,table)))))
+        (puthash opname (list has-result operand-strings) table)))
+    (insert (pp `(defconst spirv-mode--instructions ,table)))))
 
 (provide 'spirv-mode-table-gen)
