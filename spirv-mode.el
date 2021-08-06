@@ -49,7 +49,8 @@
 
 (defconst spirv-mode-keywords
   `((spirv-mode--font-lock-instruction-name . font-lock-keyword-face)
-    ("\\_<Op[[:alnum:]]*\\_>" . font-lock-variable-name-face)))
+    ("\\_<Op[[:alnum:]]*\\_>" . font-lock-comment-face)
+    ("%[_[:alnum:]]+" . font-lock-variable-name-face)))
 
 (defun spirv-mode--font-lock-instruction-name (limit)
   "A font lock matcher function for true SPIR-V instruction names.
