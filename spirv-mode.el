@@ -265,5 +265,8 @@ Tabs are not supported; patches welcome."
 
 ;; todo:
 ;; xref-find-definitions for ids
+;;
+;; eldoc help for OpPhi is weird, probably anything whose kind starts with
+;; "Pair..." is too. Should consult `operand_kinds`.
 
 (provide 'spirv-mode)
