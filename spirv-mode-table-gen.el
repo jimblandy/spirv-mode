@@ -8,22 +8,48 @@
 ;; SPIR-V instructions. From this we generate our opcode completion table.
 
 (require 'dash)
-(require 'pp)
 
-(defun spirv-mode--parse-grammar (buffer)
+(defun spirv-mode-update-tables ()
+  "Update the contents of spirv-mode-tables.el."
+  (interactive)
+  (let ((table-buf (get-buffer "spirv-mode-tables.el")))
+    (unless table-buf
+      (error "Please visit the spirv-mode source file spirv-mode-tables.el first."))
+    (let* ((grammar (spirv-mode--parse-grammar))
+           (instruction-table (spirv-mode--generate-instruction-table grammar)))
+      (with-current-buffer table-buf
+        (erase-buffer)
+        (insert ";;; Tables of SPIR-V instructions, for spirv-mode.\n"
+                "\n"
+                ";; This file is generated automatically by `spirv-mode-update-tables'.\n"
+                "\n"
+                "(defconst spirv-mode--instructions\n"
+                "  #(hash-table data (\n")
+        (maphash (lambda (key value)
+                   (let ((standard-output table-buf))
+                     (insert "    ")
+                     (prin1 key)
+                     (insert "\n      ")
+                     (prin1 value)
+                     (insert "\n")))
+                 instruction-table)
+        (goto-char (1- (point)))
+        (insert ")))")
+        (goto-char (point-max))
+        (insert "\n"
+                "(provide 'spirv-mode-tables)\n")))))
+
+(defun spirv-mode--parse-grammar ()
   "Parse the contents of `buffer' as a SPIR-V grammar description."
-  (with-current-buffer buffer
-    (save-excursion
-      (goto-char (point-min))
-      (json-parse-buffer :array-type 'list
-                         :null-object nil
-                         :false-object nil))))
-
-(defconst spirv-mode--grammar
-  (spirv-mode--parse-grammar "spirv.core.grammar.json"))
-
-(defconst spirv-mode--instructions
-  (gethash "instructions" spirv-mode--grammar))
+  (let ((grammar-buf (get-buffer "spirv.core.grammar.json")))
+    (unless grammar-buf
+      (error "Please visit grammar file spirv.core.grammar.json first."))
+    (with-current-buffer grammar-buf
+      (save-excursion
+        (goto-char (point-min))
+        (json-parse-buffer :array-type 'list
+                           :null-object nil
+                           :false-object nil)))))
 
 (defun spirv-mode--operand-help (op)
   "Compute a list of help strings for an operand."
@@ -76,14 +102,14 @@
   (--any (equal (gethash "kind" it) "IdResult")
          (gethash "operands" insn)))
 
-(defun spirv-mode--generate-operand-table ()
+(defun spirv-mode--generate-instruction-table (grammar)
   (let ((table (make-hash-table :test 'equal)))
-    (dolist (insn spirv-mode--instructions)
+    (dolist (insn (gethash "instructions" grammar))
       (let* ((opname (gethash "opname" insn))
              (operands (gethash "operands" insn))
              (has-result (spirv-mode--insn-has-result insn))
              (operand-strings (-mapcat #'spirv-mode--operand-help operands)))
         (puthash opname (list has-result operand-strings) table)))
-    (insert (pp `(defconst spirv-mode--instructions ,table)))))
+    table))
 
 (provide 'spirv-mode-table-gen)
