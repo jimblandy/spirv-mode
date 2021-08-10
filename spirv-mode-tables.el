@@ -3,7 +3,7 @@
 ;; This file is generated automatically by `spirv-mode-update-tables'.
 
 (defconst spirv-mode--instructions
-  #(hash-table data (
+  #s(hash-table test equal data (
     "OpNop"
       (nil nil)
     "OpUndef"

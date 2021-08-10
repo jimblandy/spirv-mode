@@ -24,7 +24,7 @@
                 ";; This file is generated automatically by `spirv-mode-update-tables'.\n"
                 "\n"
                 "(defconst spirv-mode--instructions\n"
-                "  #(hash-table data (\n")
+                "  #s(hash-table test equal data (\n")
         (maphash (lambda (key value)
                    (let ((standard-output table-buf))
                      (insert "    ")
