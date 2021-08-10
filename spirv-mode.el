@@ -20,8 +20,7 @@
 
 \\[complete-symbol] completes instruction names."
 
-  (setq-local case-fold-search nil
-              font-lock-defaults `(,spirv-mode-keywords nil nil nil)
+  (setq-local font-lock-defaults `(,spirv-mode-keywords nil nil nil)
               indent-line-function 'spirv-mode-indent-for-tab)
   (add-to-list 'completion-at-point-functions 'spirv-mode--complete-opcode-at-point)
   (add-function :before-until (local 'eldoc-documentation-function)
