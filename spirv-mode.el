@@ -255,11 +255,11 @@ Tabs are not supported; patches welcome."
           (when insn
             ;; Figure out which argument point is in.
             (when (<= (point) here)
-              (setq arg 0)
-              (while (progn (forward-sexp)
-                            (< (point) here))
-                (setq arg (1+ arg))))
-            (spirv-mode--insn-help opname insn arg)))))))
+              (let ((arg 0))
+                (while (progn (forward-sexp)
+                              (< (point) here))
+                  (setq arg (1+ arg)))
+                (spirv-mode--insn-help opname insn arg)))))))))
 
 
 ;; todo:
