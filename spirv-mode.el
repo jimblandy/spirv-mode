@@ -12,20 +12,6 @@
 (require 'dash)
 (require 'spirv-mode-tables)
 
-(define-derived-mode spirv-mode
-  prog-mode "SPIR-V assembly"
-  "Major mode for editing SPIR-V assembly language.
-\\<spirv-mode-map>
-\\[indent-for-tab-command] aligns instructions and comments.
-
-\\[complete-symbol] completes instruction names."
-
-  (setq-local font-lock-defaults `(,spirv-mode-keywords nil nil nil)
-              indent-line-function 'spirv-mode-indent-for-tab)
-  (add-to-list 'completion-at-point-functions 'spirv-mode--complete-opcode-at-point)
-  (add-function :before-until (local 'eldoc-documentation-function)
-                #'spirv-mode-eldoc-function))
-
 (defvar spirv-mode-syntax-table
   (let ((table (make-syntax-table)))
 
@@ -70,6 +56,7 @@ existing buffer text.")
 
 (defmacro spirv-mode--cond-line-regexp (&rest arms)
   "Like `cond`, but the conditions are regexps matched against the entire line."
+  (declare (debug (&rest (form form))))
   (let ((saved-point-sym (gensym "cond-line-regexp")))
     `(let ((,saved-point-sym (point-marker)))
        (unwind-protect
@@ -116,9 +103,11 @@ Try to preserve point helpfully."
 Return nil if there is none."
   (save-excursion
     (forward-line 0)
-    (when (re-search-backward "^\\s-*;" nil t)
+    (cond
+     ((bobp) 0)
+     ((re-search-backward "^\\s-*;" nil t)
       (goto-char (1- (match-end 0)))
-      (current-column))))
+      (current-column)))))
 
 (defun spirv-mode--indent-blank-line ()
   "Set up indentation for a blank line.
@@ -143,7 +132,7 @@ Try to preserve point helpfully."
           (goto-char (match-beginning 2))
           (spirv-mode--adjust-space 1)
           (goto-char (match-beginning 1))
-          (spirv-mode--adjust-space (- goal 3 (length result-id)))))
+          (spirv-mode--adjust-space (max 0 (- goal 3 (length result-id))))))
 
        ;; Just a result id?
        ("\\s-*\\(%[^[:space:]\n]+\\)\\s-*"
@@ -185,9 +174,10 @@ column 24, because that's a nice number."
 
 (defun spirv-mode-set-opcode-column (column)
   (interactive
-   (list
-    (read-number "Set opcode column (default %d): "
-                 (current-column))))
+   (let ((default (current-column)))
+     (list
+      (read-number (format "Set opcode column: " default)
+                   default))))
   (setq spirv-mode-opcode-column column))
 
 (defun spirv-mode--adjust-indentation (desired)
@@ -261,6 +251,22 @@ Tabs are not supported; patches welcome."
                   (setq arg (1+ arg)))
                 (spirv-mode--insn-help opname insn arg)))))))))
 
+
+(define-derived-mode spirv-mode
+  prog-mode "SPIR-V assembly"
+  "Major mode for editing SPIR-V assembly language.
+\\<spirv-mode-map>
+\\[indent-for-tab-command] aligns instructions and comments.
+
+\\[complete-symbol] completes instruction names.
+
+\\{spirv-mode-map}"
+
+  (setq-local font-lock-defaults `(,spirv-mode-keywords nil nil nil)
+              indent-line-function 'spirv-mode-indent-for-tab)
+  (add-to-list 'completion-at-point-functions 'spirv-mode--complete-opcode-at-point)
+  (add-function :before-until (local 'eldoc-documentation-function)
+                #'spirv-mode-eldoc-function))
 
 ;; todo:
 ;; xref-find-definitions for ids
